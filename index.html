@@ -14,9 +14,9 @@
           extend: {
             colors: {
               civic: {
-                ink: "#620603",
+                ink: "#111111",
                 muted: "#58595B",
-                blue: "#620603",
+                blue: "#111111",
                 sky: "#FA4F1E",
                 green: "#39C1A1",
                 gold: "#F1BD51",
@@ -38,7 +38,7 @@
               }
             },
             boxShadow: {
-              civic: "0 18px 45px rgba(98, 6, 3, 0.10)"
+              civic: "0 18px 45px rgba(17, 17, 17, 0.07)"
             },
             fontFamily: {
               sans: ["Montserrat", "ui-sans-serif", "system-ui", "Segoe UI", "Arial", "sans-serif"]
@@ -53,11 +53,8 @@
     <style>
       html { scroll-behavior: smooth; }
       body {
-        color: #620603;
-        background:
-          radial-gradient(circle at 8% 0%, rgba(250, 79, 30, 0.12), transparent 28rem),
-          radial-gradient(circle at 92% 18%, rgba(209, 203, 187, 0.42), transparent 30rem),
-          linear-gradient(180deg, #f7f3e9 0%, #f3f0e7 46%, #f8f5ee 100%);
+        color: #111111;
+        background: #fbfaf7;
         min-height: 100vh;
         position: relative;
       }
@@ -68,7 +65,7 @@
         background-size: 360px auto;
         content: "";
         inset: 0;
-        opacity: 0.04;
+        opacity: 0.015;
         pointer-events: none;
         position: fixed;
         z-index: -2;
@@ -81,7 +78,7 @@
         content: "";
         height: 760px;
         left: -280px;
-        opacity: 0.09;
+        opacity: 0.035;
         pointer-events: none;
         position: absolute;
         top: 48%;
@@ -306,7 +303,7 @@
         return (
           <div className="mx-auto mb-7 max-w-3xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-civic-ink">{eyebrow}</p>
-            <h2 className="mt-2 text-3xl font-extrabold text-civic-ink sm:text-4xl">{title}</h2>
+            <h2 className="mt-2 text-3xl font-extrabold text-[#111111] sm:text-4xl">{title}</h2>
             {children && <p className="mt-3 text-base leading-7 text-civic-muted">{children}</p>}
           </div>
         );
@@ -326,10 +323,10 @@
 
       function Header({ activeSection, setActiveSection }) {
         return (
-          <header className="sticky top-0 z-40 border-b border-civic-line bg-[#f8f5ee]/92 backdrop-blur">
+          <header className="sticky top-0 z-40 border-b border-civic-line bg-white">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <button type="button" onClick={() => setActiveSection("overview")} className="focus-ring flex items-center rounded-lg" aria-label="Show overview">
-                <img src="./assets/we-make-omaha-logo.jpg" alt="We Make Omaha" className="h-10 w-32 rounded-sm object-contain object-left sm:w-40" />
+                <img src="./assets/we-make-omaha-logo.jpg" alt="We Make Omaha" className="h-14 w-44 rounded-sm object-contain object-left sm:h-16 sm:w-56" />
               </button>
               <label className="flex w-full max-w-xs items-center gap-3 sm:max-w-sm">
                 <span className="hidden text-sm font-extrabold text-civic-ink sm:inline">Section</span>
@@ -359,26 +356,22 @@
               <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
                 <div className="relative">
                   <div className="mb-6 h-1.5 w-24 rounded-full bg-civic-orange"></div>
-                  <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-civic-ink">Plan implementation dashboard</p>
-                  <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-civic-ink sm:text-6xl">Omaha Progress Tracker</h1>
+                  <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-[#620603]">Plan implementation dashboard</p>
+                  <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-[#111111] sm:text-6xl">Omaha Progress Tracker</h1>
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-civic-muted">
                     The Omaha Progress Tracker monitors how the comprehensive plan is being implemented and whether citywide conditions are changing over time.
                   </p>
-                  <div className="mt-7 flex flex-wrap gap-3">
-                    <a href="#implementation" className="rounded-xl bg-civic-ink px-5 py-3 text-sm font-extrabold text-white shadow-sm hover:bg-[#410402]">Track actions</a>
-                    <a href="#investments" className="rounded-xl border border-civic-line bg-white/90 px-5 py-3 text-sm font-extrabold text-civic-ink shadow-sm hover:bg-[#efe9dc]">Explore implementations</a>
-                  </div>
                 </div>
-                <div className="brand-panel rounded-3xl border border-white bg-white/88 p-4 shadow-civic">
+                <div className="rounded-3xl border border-civic-line bg-white p-4 shadow-civic">
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {stats.map(([value, label]) => (
-                      <div key={label} className="relative z-10 rounded-2xl border border-civic-line bg-[#f8f5ee]/90 p-4">
-                        <p className="text-3xl font-black text-civic-ink">{value}</p>
+                      <div key={label} className="rounded-2xl border border-civic-line bg-white p-4 shadow-sm">
+                        <p className="text-3xl font-black text-[#620603]">{value}</p>
                         <p className="mt-1 text-sm font-semibold leading-5 text-civic-muted">{label}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="relative z-10 mt-4 rounded-2xl bg-civic-ink p-5 text-white">
+                  <div className="mt-4 rounded-2xl bg-[#620603] p-5 text-white">
                     <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#FFBE9A]">How to read the tracker</p>
                     <div className="mt-4 grid gap-3 text-sm leading-6 sm:grid-cols-2">
                       <p><strong>Actions</strong> show accountability.</p>
@@ -393,7 +386,7 @@
                 {goals.map(goal => (
                   <article key={goal.name} className="rounded-2xl border border-civic-line bg-white/92 p-5 shadow-sm" style={{ borderTop: `6px solid ${goalStyle(goal.name).color}`, background: `linear-gradient(180deg, ${goalStyle(goal.name).tint}, rgba(255,255,255,0.94) 42%)` }}>
                     <div className="mb-4 h-1.5 w-16 rounded-full" style={{ backgroundColor: goalStyle(goal.name).color }}></div>
-                    <h3 className="text-lg font-extrabold">{goal.name}</h3>
+                    <h3 className="text-lg font-extrabold text-[#111111]">{goal.name}</h3>
                     <p className="mt-2 min-h-[72px] text-sm leading-6 text-civic-muted">{goal.desc}</p>
                     <a href="#indicators" className="mt-4 inline-flex rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</a>
                   </article>
@@ -478,7 +471,7 @@
               </SectionHeading>
               <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
                 {["All", ...goals.map(g => g.name)].map(name => (
-                  <button key={name} onClick={() => setTab(name)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${tab === name ? "bg-civic-ink text-white ring-civic-ink" : "bg-white/90 text-civic-muted ring-civic-line hover:text-civic-ink"}`} style={tab === name && name !== "All" ? { boxShadow: `inset 0 -4px 0 ${goalStyle(name).color}` } : {}}>{name}</button>
+                  <button key={name} onClick={() => setTab(name)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${tab === name ? "bg-[#620603] text-white ring-[#620603]" : "bg-white/90 text-civic-muted ring-civic-line hover:text-[#111111]"}`} style={tab === name && name !== "All" ? { boxShadow: `inset 0 -4px 0 ${goalStyle(name).color}` } : {}}>{name}</button>
                 ))}
               </div>
               <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-5">
@@ -497,12 +490,12 @@
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: goalStyle(indicator.goal).color }}>{indicator.goal}</p>
-                        <h3 className="mt-1 text-lg font-extrabold leading-6">{indicator.name}</h3>
+                        <h3 className="mt-1 text-lg font-extrabold leading-6 text-[#111111]">{indicator.name}</h3>
                       </div>
                       <Badge>{indicator.status}</Badge>
                     </div>
                     <div className="mt-4 flex items-end justify-between">
-                      <p className="text-3xl font-black text-civic-ink">{indicator.value}</p>
+                      <p className="text-3xl font-black text-[#111111]">{indicator.value}</p>
                       <p className="rounded-lg bg-[#f3f0e7] px-2.5 py-1 text-xs font-extrabold text-civic-muted">{indicator.direction}</p>
                     </div>
                     <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[#efede7]">
@@ -531,20 +524,20 @@
               </SectionHeading>
               <div className="mb-6 flex flex-wrap justify-center gap-2">
                 {["Citywide", "City Council District", "Planning District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
-                  <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${geoType === type ? "bg-civic-ink text-white ring-civic-ink" : "bg-white/90 text-civic-muted ring-civic-line"}`}>{type}</button>
+                  <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${geoType === type ? "bg-[#620603] text-white ring-[#620603]" : "bg-white/90 text-civic-muted ring-civic-line"}`}>{type}</button>
                 ))}
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {areaProfiles.map(area => (
                   <article key={area.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-xl font-black">{area.name}</h3>
+                      <h3 className="text-xl font-black text-[#111111]">{area.name}</h3>
                       <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1 text-xs font-bold text-civic-muted">{geoType}</span>
                     </div>
                     <dl className="mt-5 space-y-4 text-sm leading-6">
-                      <div><dt className="font-bold text-civic-ink">Key priorities from engagement</dt><dd className="mt-1 text-civic-muted">{area.priorities}</dd></div>
-                      <div><dt className="font-bold text-civic-ink">Current projects</dt><dd className="mt-1 text-civic-muted">{area.projects}</dd></div>
-                      <div><dt className="font-bold text-civic-ink">Key indicators</dt><dd className="mt-1 text-civic-muted">{area.indicators}</dd></div>
+                      <div><dt className="font-bold text-[#111111]">Key priorities from engagement</dt><dd className="mt-1 text-civic-muted">{area.priorities}</dd></div>
+                      <div><dt className="font-bold text-[#111111]">Current projects</dt><dd className="mt-1 text-civic-muted">{area.projects}</dd></div>
+                      <div><dt className="font-bold text-[#111111]">Key indicators</dt><dd className="mt-1 text-civic-muted">{area.indicators}</dd></div>
                     </dl>
                     <div className="mt-5 rounded-xl border-l-4 border-civic-orange bg-[#f3f0e7] p-3 text-sm font-extrabold text-civic-ink">Progress status: {area.status}</div>
                   </article>
@@ -646,7 +639,7 @@
               <SectionHeading eyebrow="Annual Reports" title="Progress over time">
                 Annual reports summarize completed actions, investments, indicator trends, and areas needing continued attention.
               </SectionHeading>
-              <div className="brand-panel rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
+              <div className="brand-panel rounded-3xl border border-civic-line bg-[#620603] p-6 text-white shadow-civic md:p-8">
                 <p className="max-w-5xl text-lg leading-8">
                   In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas requiring continued attention include transit access, housing affordability, infrastructure gaps, and investment in historically underserved neighborhoods.
                 </p>
@@ -707,7 +700,7 @@
             <main className="min-h-[calc(100vh-132px)]">
               {sectionComponents[activeSection]}
             </main>
-            <footer className="border-t border-civic-line bg-civic-ink px-4 py-8 text-center text-sm font-semibold text-[#f3f0e7] sm:px-6 lg:px-8">
+            <footer className="border-t border-civic-line bg-[#620603] px-4 py-8 text-center text-sm font-semibold text-[#f3f0e7] sm:px-6 lg:px-8">
               Omaha Progress Tracker is a sample public-facing implementation dashboard concept for tracking comprehensive plan progress.
             </footer>
           </>
