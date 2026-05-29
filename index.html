@@ -63,14 +63,14 @@
       }
       body::before {
         background-image: url("./assets/wmo-pattern.jpg");
-        background-position: top right;
-        background-repeat: no-repeat;
-        background-size: 900px auto;
+        background-position: top left;
+        background-repeat: repeat;
+        background-size: 360px auto;
         content: "";
         inset: 0;
-        opacity: 0.06;
+        opacity: 0.04;
         pointer-events: none;
-        position: absolute;
+        position: fixed;
         z-index: -2;
       }
       body::after {
@@ -324,23 +324,21 @@
         );
       }
 
-      function Header() {
+      function Header({ activeSection, setActiveSection }) {
         return (
           <header className="sticky top-0 z-40 border-b border-civic-line bg-[#f8f5ee]/92 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-              <a href="#overview" className="flex items-center gap-3" aria-label="Omaha Progress Tracker home">
+              <button type="button" onClick={() => setActiveSection("overview")} className="focus-ring flex items-center rounded-lg" aria-label="Show overview">
                 <img src="./assets/we-make-omaha-logo.jpg" alt="We Make Omaha" className="h-10 w-32 rounded-sm object-contain object-left sm:w-40" />
-                <span>
-                  <span className="block text-sm font-extrabold leading-tight text-civic-ink sm:text-base">Omaha Progress Tracker</span>
-                  <span className="hidden text-xs font-semibold text-civic-muted sm:block">Comprehensive plan dashboard</span>
-                </span>
-              </a>
-              <nav className="hidden max-w-4xl flex-wrap justify-end gap-1 lg:flex">
-                {navItems.map(([label, id]) => (
-                  <a key={id} href={`#${id}`} className="rounded-lg px-3 py-2 text-sm font-bold text-civic-muted hover:bg-[#efe9dc] hover:text-civic-ink">{label}</a>
-                ))}
-              </nav>
-              <a href="#indicators" className="rounded-xl bg-civic-ink px-4 py-2.5 text-sm font-extrabold text-white shadow-sm hover:bg-[#410402]">View dashboard</a>
+              </button>
+              <label className="flex w-full max-w-xs items-center gap-3 sm:max-w-sm">
+                <span className="hidden text-sm font-extrabold text-civic-ink sm:inline">Section</span>
+                <select value={activeSection} onChange={event => setActiveSection(event.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white px-3 py-2.5 text-sm font-extrabold text-civic-ink shadow-sm">
+                  {navItems.map(([label, id]) => (
+                    <option key={id} value={id}>{label}</option>
+                  ))}
+                </select>
+              </label>
             </div>
           </header>
         );
@@ -631,74 +629,83 @@
         );
       }
 
-      function ReportsAndMethods() {
-        const methods = [
-          ["Indicator Definition", "Plain-language definition of what the measure captures and why it was selected."],
-          ["Data Source", "Primary source, stewarding agency, and any transformations used in the dashboard."],
-          ["Update Frequency", "How often the measure is refreshed, such as annually, quarterly, or when new data is released."],
-          ["Geography", "Whether the measure is available citywide, by council district, planning district, corridor, or neighborhood area."],
-          ["Baseline Year", "The first year used to compare future progress against plan adoption conditions."],
-          ["Direction of Desired Change", "Whether the plan expects the value to increase, decrease, or be monitored."],
-          ["Limitations", "Known caveats, missing data, confidence issues, or interpretation notes for public users."]
-        ];
+      const methodCards = [
+        ["Indicator Definition", "Plain-language definition of what the measure captures and why it was selected."],
+        ["Data Source", "Primary source, stewarding agency, and any transformations used in the dashboard."],
+        ["Update Frequency", "How often the measure is refreshed, such as annually, quarterly, or when new data is released."],
+        ["Geography", "Whether the measure is available citywide, by council district, planning district, corridor, or neighborhood area."],
+        ["Baseline Year", "The first year used to compare future progress against plan adoption conditions."],
+        ["Direction of Desired Change", "Whether the plan expects the value to increase, decrease, or be monitored."],
+        ["Limitations", "Known caveats, missing data, confidence issues, or interpretation notes for public users."]
+      ];
+
+      function AnnualReports() {
         return (
-          <>
-            <section id="reports" className="px-4 py-16 sm:px-6 lg:px-8">
-              <div className="mx-auto max-w-7xl">
-                <SectionHeading eyebrow="Annual Reports" title="Progress over time">
-                  Annual reports summarize completed actions, investments, indicator trends, and areas needing continued attention.
-                </SectionHeading>
-                <div className="brand-panel rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
-                  <p className="max-w-5xl text-lg leading-8">
-                    In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas requiring continued attention include transit access, housing affordability, infrastructure gaps, and investment in historically underserved neighborhoods.
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {["Download Annual Report", "View Completed Actions", "View Indicators Needing Attention", "View Public Investment Summary"].map(button => (
-                      <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-civic-ink hover:bg-[#f3f0e7]">{button}</button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section id="methods" className="border-t border-civic-line bg-[#efe9dc]/68 px-4 py-16 sm:px-6 lg:px-8">
-              <div className="mx-auto max-w-7xl">
-                <SectionHeading eyebrow="Data & Methods" title="Transparent methodology">
-                  Each indicator includes an "About this measure" explanation to help residents understand how progress is measured.
-                </SectionHeading>
-                <div className="mb-6 rounded-3xl border border-civic-line bg-white p-6 shadow-sm">
-                  <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-civic-ink">About this measure</p>
-                  <h3 className="mt-2 text-2xl font-black">Infill Development</h3>
-                  <p className="mt-3 max-w-4xl text-base leading-7 text-civic-muted">
-                    Measures the share of new population and employment growth occurring in already developed areas. Higher infill development can support efficient infrastructure use, stronger corridors, more walkable communities, and reduced pressure on undeveloped land.
-                  </p>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  {methods.map(([title, text]) => (
-                    <article key={title} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
-                      <h3 className="text-base font-extrabold">{title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-civic-muted">{text}</p>
-                    </article>
+          <section id="reports" className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Annual Reports" title="Progress over time">
+                Annual reports summarize completed actions, investments, indicator trends, and areas needing continued attention.
+              </SectionHeading>
+              <div className="brand-panel rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
+                <p className="max-w-5xl text-lg leading-8">
+                  In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas requiring continued attention include transit access, housing affordability, infrastructure gaps, and investment in historically underserved neighborhoods.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {["Download Annual Report", "View Completed Actions", "View Indicators Needing Attention", "View Public Investment Summary"].map(button => (
+                    <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-civic-ink hover:bg-[#f3f0e7]">{button}</button>
                   ))}
                 </div>
               </div>
-            </section>
-          </>
+            </div>
+          </section>
+        );
+      }
+
+      function DataMethods() {
+        return (
+          <section id="methods" className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Data & Methods" title="Transparent methodology">
+                Each indicator includes an "About this measure" explanation to help residents understand how progress is measured.
+              </SectionHeading>
+              <div className="mb-6 rounded-3xl border border-civic-line bg-white p-6 shadow-sm">
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-civic-ink">About this measure</p>
+                <h3 className="mt-2 text-2xl font-black">Infill Development</h3>
+                <p className="mt-3 max-w-4xl text-base leading-7 text-civic-muted">
+                  Measures the share of new population and employment growth occurring in already developed areas. Higher infill development can support efficient infrastructure use, stronger corridors, more walkable communities, and reduced pressure on undeveloped land.
+                </p>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {methodCards.map(([title, text]) => (
+                  <article key={title} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                    <h3 className="text-base font-extrabold">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-civic-muted">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
         );
       }
 
       function App() {
         const [globalSearch, setGlobalSearch] = useState("");
+        const [activeSection, setActiveSection] = useState("overview");
+        const sectionComponents = {
+          overview: <Overview />,
+          implementation: <ImplementationTracker search={globalSearch} setSearch={setGlobalSearch} />,
+          indicators: <IndicatorsDashboard search={globalSearch} setSearch={setGlobalSearch} />,
+          areas: <ExploreAreas />,
+          investments: <InvestmentMap />,
+          priorities: <CommunityPriorities />,
+          reports: <AnnualReports />,
+          methods: <DataMethods />
+        };
         return (
           <>
-            <Header />
-            <main>
-              <Overview />
-              <ImplementationTracker search={globalSearch} setSearch={setGlobalSearch} />
-              <IndicatorsDashboard search={globalSearch} setSearch={setGlobalSearch} />
-              <ExploreAreas />
-              <InvestmentMap />
-              <CommunityPriorities />
-              <ReportsAndMethods />
+            <Header activeSection={activeSection} setActiveSection={setActiveSection} />
+            <main className="min-h-[calc(100vh-132px)]">
+              {sectionComponents[activeSection]}
             </main>
             <footer className="border-t border-civic-line bg-civic-ink px-4 py-8 text-center text-sm font-semibold text-[#f3f0e7] sm:px-6 lg:px-8">
               Omaha Progress Tracker is a sample public-facing implementation dashboard concept for tracking comprehensive plan progress.
