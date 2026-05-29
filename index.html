@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omaha Progress Tracker</title>
+    <script src="./vendor/tailwindcss-cdn.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              civic: {
+                ink: "#17202a",
+                muted: "#566574",
+                blue: "#22577a",
+                sky: "#4b8fb8",
+                green: "#3f7d58",
+                gold: "#b7791f",
+                red: "#b34d4d",
+                cream: "#f7f5ef",
+                line: "#d9e1e7"
+              }
+            },
+            boxShadow: {
+              civic: "0 18px 45px rgba(23, 32, 42, 0.08)"
+            },
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Arial", "sans-serif"]
+            }
+          }
+        }
+      };
+    </script>
+    <script src="./vendor/react.production.min.js"></script>
+    <script src="./vendor/react-dom.production.min.js"></script>
+    <script src="./vendor/babel.min.js"></script>
+    <style>
+      html { scroll-behavior: smooth; }
+      body {
+        background:
+          radial-gradient(circle at top left, rgba(75, 143, 184, 0.12), transparent 28rem),
+          linear-gradient(180deg, #f7f5ef 0%, #f4f7f8 46%, #f7f5ef 100%);
+      }
+      .map-grid {
+        background-image:
+          linear-gradient(rgba(34, 87, 122, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 87, 122, 0.12) 1px, transparent 1px);
+        background-size: 44px 44px;
+      }
+      .focus-ring:focus { outline: 3px solid rgba(75, 143, 184, 0.35); outline-offset: 2px; }
+    </style>
+  </head>
+  <body class="text-civic-ink antialiased">
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useMemo, useState } = React;
+
+      const navItems = [
+        ["Overview", "overview"],
+        ["Implementation Tracker", "implementation"],
+        ["Indicators Dashboard", "indicators"],
+        ["Explore by Area", "areas"],
+        ["Investment Map", "investments"],
+        ["Community Priorities", "priorities"],
+        ["Annual Reports", "reports"],
+        ["Data & Methods", "methods"]
+      ];
+
+      const goals = [
+        { name: "Growth & Land Use", desc: "Directs growth toward centers, corridors, and existing infrastructure." },
+        { name: "Housing Choice", desc: "Expands housing types, affordability, and neighborhood stability." },
+        { name: "Mobility & Access", desc: "Improves safe, connected access to transit, jobs, schools, parks, and daily needs." },
+        { name: "Economic Opportunity", desc: "Supports jobs, corridors, small businesses, and workforce pathways." },
+        { name: "Green Space & Resilience", desc: "Protects natural systems while expanding parks, trails, and climate resilience." },
+        { name: "Equity & Neighborhood Investment", desc: "Shows whether investments are reaching historically underserved areas." },
+        { name: "Fiscal Sustainability", desc: "Tracks whether growth patterns support efficient public services and infrastructure." }
+      ];
+
+      const actions = [
+        {
+          title: "Update zoning regulations to support mixed-use development along priority corridors.",
+          status: "In Progress",
+          department: "Planning",
+          timeframe: "Short-term",
+          goal: "Growth & Land Use",
+          indicators: ["Growth in Centers and Corridors", "Infill Development"],
+          funding: "Funded"
+        },
+        {
+          title: "Expand sidewalk connections near schools, parks, and transit stops.",
+          status: "Ongoing",
+          department: "Public Works",
+          timeframe: "Medium-term",
+          goal: "Mobility & Access",
+          indicators: ["Households within a 15-Minute Walk of Transit", "Non-Auto Trip Share"],
+          funding: "Partially Funded"
+        },
+        {
+          title: "Create a housing strategy to support missing-middle and affordable housing.",
+          status: "Completed",
+          department: "Housing and Community Development",
+          timeframe: "Short-term",
+          goal: "Housing Choice",
+          indicators: ["Middle Housing Share", "Housing Cost Burden"],
+          funding: "Funded"
+        },
+        {
+          title: "Prioritize infrastructure investment in historically underserved neighborhoods.",
+          status: "In Progress",
+          department: "Mayor's Office",
+          timeframe: "Medium-term",
+          goal: "Equity & Neighborhood Investment",
+          indicators: ["Public Investment in Historically Underserved Areas", "Infrastructure Projects in Priority Areas"],
+          funding: "Partially Funded"
+        },
+        {
+          title: "Develop a citywide small business and corridor reinvestment program.",
+          status: "Not Started",
+          department: "Economic Development",
+          timeframe: "Medium-term",
+          goal: "Economic Opportunity",
+          indicators: ["Jobs Near Transit", "Youth Job Pathway Opportunities"],
+          funding: "Unfunded"
+        },
+        {
+          title: "Improve access to parks, trails, and public gathering spaces.",
+          status: "Ongoing",
+          department: "Parks, Recreation and Public Property",
+          timeframe: "Long-term",
+          goal: "Green Space & Resilience",
+          indicators: ["Households within a 15-Minute Walk of Parks or Trails", "Tree Canopy Coverage"],
+          funding: "Funded"
+        },
+        {
+          title: "Align capital improvement planning with comprehensive plan priorities.",
+          status: "Delayed",
+          department: "Finance",
+          timeframe: "Short-term",
+          goal: "Fiscal Sustainability",
+          indicators: ["Infrastructure Cost per New Household or Job", "Value per Acre"],
+          funding: "Partially Funded"
+        }
+      ];
+
+      const indicators = [
+        ["Growth & Land Use", "Infill Development", "55.7%", "Increase", "Improving", "Shows whether growth is using existing infrastructure and strengthening established areas.", "2027", 56],
+        ["Growth & Land Use", "Greenfield Land Consumed", "1,240 acres", "Decrease", "Needs Attention", "Tracks pressure on undeveloped land and long-term infrastructure obligations.", "2027", 38],
+        ["Growth & Land Use", "Growth in Centers and Corridors", "48.2%", "Increase", "Improving", "Measures whether new activity is concentrating in planned mixed-use places.", "2027", 48],
+        ["Growth & Land Use", "Redevelopment of Vacant or Underutilized Land", "22.5%", "Increase", "Stable", "Indicates whether vacant and underused sites are becoming productive community assets.", "2027", 23],
+        ["Fiscal Sustainability", "Infrastructure Cost per New Household or Job", "$18,400", "Decrease", "Stable", "Connects development patterns to public service and capital costs.", "2027", 62],
+        ["Fiscal Sustainability", "Value per Acre", "$415,000", "Increase", "Improving", "Compares land productivity across development patterns and districts.", "2027", 72],
+        ["Fiscal Sustainability", "Property Tax Revenue from New Development", "$38.2M", "Increase", "Improving", "Shows how new development supports local public services.", "2027", 68],
+        ["Housing Choice", "Average Housing Density", "7.8 units per acre", "Increase", "Stable", "Tracks whether neighborhoods can support more housing choice and local services.", "2027", 50],
+        ["Housing Choice", "Detached Housing Share", "61%", "Monitor", "Stable", "Shows the balance of detached homes compared with other housing options.", "2027", 61],
+        ["Housing Choice", "Middle Housing Share", "18%", "Increase", "Improving", "Tracks duplexes, townhomes, courtyard housing, and other moderate-scale options.", "2027", 42],
+        ["Housing Choice", "Multi-Unit Housing Share", "21%", "Increase", "Stable", "Measures apartments and other multi-unit homes near jobs, transit, and services.", "2027", 45],
+        ["Housing Choice", "Housing Cost Burden", "31%", "Decrease", "Needs Attention", "Shows the share of households spending more than they can comfortably afford on housing.", "2027", 31],
+        ["Mobility & Access", "Households within a 15-Minute Walk of Transit", "53.9%", "Increase", "Stable", "Shows whether residents can reach transit without needing a car.", "2027", 54],
+        ["Mobility & Access", "Households within a 15-Minute Walk of Parks or Trails", "68.4%", "Increase", "Improving", "Measures practical access to recreation, trails, and daily outdoor activity.", "2027", 68],
+        ["Mobility & Access", "Households within a 15-Minute Walk of Retail", "46.5%", "Increase", "Stable", "Tracks access to daily needs in complete neighborhoods.", "2027", 47],
+        ["Mobility & Access", "Non-Auto Trip Share", "12.7%", "Increase", "Needs Attention", "Shows whether walking, biking, transit, and other options are becoming more useful.", "2027", 29],
+        ["Mobility & Access", "Vehicle Miles Traveled per Service Population", "21.3 miles", "Decrease", "Needs Attention", "Measures travel demand and transportation efficiency across residents and jobs.", "2027", 34],
+        ["Economic Opportunity", "Jobs Accessible within 20 Minutes", "42.6%", "Increase", "Stable", "Shows how many jobs are reasonably reachable from where people live.", "2027", 43],
+        ["Economic Opportunity", "Average Wage", "$56,800", "Increase", "Improving", "Tracks whether economic growth is translating into stronger wages.", "2027", 64],
+        ["Economic Opportunity", "Jobs Near Transit", "37.4%", "Increase", "Stable", "Connects employment growth to transportation choice.", "2027", 37],
+        ["Economic Opportunity", "Youth Job Pathway Opportunities", "1,250 placements", "Increase", "Improving", "Counts internships, apprenticeships, and workforce programs connected to local youth.", "2027", 74],
+        ["Green Space & Resilience", "Tree Canopy Coverage", "28.5%", "Increase", "Stable", "Tracks shade, heat mitigation, air quality, and neighborhood comfort.", "2027", 57],
+        ["Green Space & Resilience", "Impervious Surface Coverage", "34.2%", "Decrease", "Stable", "Shows how much land is covered by hard surfaces that increase runoff and heat.", "2027", 46],
+        ["Green Space & Resilience", "Development in Flood-Prone Areas", "6.1%", "Decrease", "Needs Attention", "Monitors exposure to flooding and long-term climate risk.", "2027", 22],
+        ["Green Space & Resilience", "Greenfield and Agricultural Land Consumed", "1,240 acres", "Decrease", "Needs Attention", "Tracks loss of open land and farmland at the edge of the city.", "2027", 35],
+        ["Equity & Neighborhood Investment", "Public Investment in Historically Underserved Areas", "$84.5M", "Increase", "Improving", "Shows where public dollars are being directed and who benefits.", "2027", 70],
+        ["Equity & Neighborhood Investment", "Neighborhoods with Improved Access to Transit", "14", "Increase", "Improving", "Counts places where transit access has measurably improved.", "2027", 66],
+        ["Equity & Neighborhood Investment", "Areas with High Displacement Risk", "9", "Decrease", "Needs Attention", "Identifies neighborhoods where rising costs could displace residents or businesses.", "2027", 27],
+        ["Equity & Neighborhood Investment", "Infrastructure Projects in Priority Areas", "37", "Increase", "Improving", "Tracks delivery of capital projects in priority geographies.", "2027", 78]
+      ].map(([goal, name, value, direction, status, why, year, progress]) => ({
+        goal, name, value, direction, status, why, year, progress
+      }));
+
+      const areaProfiles = [
+        { name: "South Omaha", priorities: "Housing affordability, safer streets, small business support, youth opportunities, transit access.", projects: "24th Street corridor reinvestment, sidewalk gap repairs, affordable housing preservation.", indicators: "Walkability to transit, housing cost burden, public investment, small business activity, park access.", status: "Needs continued attention" },
+        { name: "North Omaha", priorities: "Neighborhood reinvestment, vacant property reuse, workforce pathways, public space upgrades.", projects: "Priority area infrastructure projects, youth job pathways, park improvements.", indicators: "Public investment, jobs accessible within 20 minutes, transit access, tree canopy.", status: "Early progress" },
+        { name: "Downtown / Urban Core", priorities: "Mixed-use redevelopment, housing production, safer walking connections, public gathering spaces.", projects: "Downtown mixed-use redevelopment, trail connection expansion, transit access improvements.", indicators: "Infill development, value per acre, non-auto trip share, multi-unit housing share.", status: "Strong progress" },
+        { name: "West Omaha", priorities: "Connected growth, park access, corridor planning, efficient infrastructure phasing.", projects: "Priority corridor planning, trail extensions, greenfield impact tracking.", indicators: "Greenfield land consumed, park access, infrastructure cost per new household or job.", status: "Monitoring growth impacts" },
+        { name: "Central Corridors", priorities: "Transit access, mixed-use corridors, missing-middle housing, safer crossings.", projects: "Corridor zoning updates, transit access improvements, sidewalk gap program.", indicators: "Growth in centers and corridors, jobs near transit, middle housing share.", status: "In progress" }
+      ];
+
+      const investments = [
+        "24th Street Corridor Reinvestment",
+        "Sidewalk Gap Program",
+        "Transit Access Improvements",
+        "Neighborhood Park Upgrades",
+        "Affordable Housing Preservation Program",
+        "Downtown Mixed-Use Redevelopment",
+        "Trail Connection Expansion"
+      ];
+
+      const priorityRows = [
+        ["Affordable housing", "Housing Choice", "Housing cost burden, affordable units created"],
+        ["Walkability", "Mobility & Access", "Walkability to schools, retail, parks, and transit"],
+        ["Better transit", "Mobility & Access", "Transit access, non-auto trips, VMT"],
+        ["Neighborhood reinvestment", "Equity & Neighborhood Investment", "Public investment by geography"],
+        ["Youth opportunities", "Economic Opportunity", "Youth job pathways, internships, workforce programs"],
+        ["Parks and public spaces", "Green Space & Resilience", "Park access, trail access, tree canopy"],
+        ["Small business support", "Economic Opportunity", "Small business activity, corridor reinvestment"]
+      ];
+
+      const statusStyles = {
+        "Improving": "bg-green-50 text-green-800 ring-green-200",
+        "Stable": "bg-sky-50 text-sky-800 ring-sky-200",
+        "Needs Attention": "bg-red-50 text-red-800 ring-red-200",
+        "Completed": "bg-green-50 text-green-800 ring-green-200",
+        "In Progress": "bg-blue-50 text-blue-800 ring-blue-200",
+        "Delayed": "bg-red-50 text-red-800 ring-red-200",
+        "Ongoing": "bg-amber-50 text-amber-800 ring-amber-200",
+        "Not Started": "bg-slate-100 text-slate-700 ring-slate-200",
+        "Funded": "bg-green-50 text-green-800 ring-green-200",
+        "Partially Funded": "bg-amber-50 text-amber-800 ring-amber-200",
+        "Unfunded": "bg-slate-100 text-slate-700 ring-slate-200"
+      };
+
+      function Badge({ children }) {
+        return <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusStyles[children] || "bg-slate-100 text-slate-700 ring-slate-200"}`}>{children}</span>;
+      }
+
+      function SectionHeading({ eyebrow, title, children }) {
+        return (
+          <div className="mx-auto mb-7 max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-civic-blue">{eyebrow}</p>
+            <h2 className="mt-2 text-3xl font-bold text-civic-ink sm:text-4xl">{title}</h2>
+            {children && <p className="mt-3 text-base leading-7 text-civic-muted">{children}</p>}
+          </div>
+        );
+      }
+
+      function Select({ label, value, setValue, options }) {
+        return (
+          <label className="block">
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">{label}</span>
+            <select value={value} onChange={e => setValue(e.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white px-3 py-2.5 text-sm font-medium text-civic-ink shadow-sm">
+              <option>All</option>
+              {options.map(option => <option key={option}>{option}</option>)}
+            </select>
+          </label>
+        );
+      }
+
+      function Header() {
+        return (
+          <header className="sticky top-0 z-40 border-b border-white/70 bg-white/90 backdrop-blur">
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+              <a href="#overview" className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-civic-blue text-sm font-black text-white">OP</span>
+                <span>
+                  <span className="block text-base font-bold leading-tight">Omaha Progress Tracker</span>
+                  <span className="hidden text-xs text-civic-muted sm:block">Comprehensive plan implementation dashboard</span>
+                </span>
+              </a>
+              <nav className="hidden max-w-4xl flex-wrap justify-end gap-1 lg:flex">
+                {navItems.map(([label, id]) => (
+                  <a key={id} href={`#${id}`} className="rounded-lg px-3 py-2 text-sm font-semibold text-civic-muted hover:bg-slate-100 hover:text-civic-ink">{label}</a>
+                ))}
+              </nav>
+              <a href="#indicators" className="rounded-xl bg-civic-blue px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-civic-ink">View Dashboard</a>
+            </div>
+          </header>
+        );
+      }
+
+      function Overview() {
+        const stats = [
+          ["42", "indicators tracked"],
+          ["18", "actions completed this year"],
+          ["11", "actions in progress"],
+          ["6", "indicators improving"],
+          ["3", "indicators needing attention"],
+          ["7", "plan goal areas"]
+        ];
+        return (
+          <section id="overview" className="px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-[0.22em] text-civic-blue">Public implementation dashboard</p>
+                  <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-civic-ink sm:text-6xl">Omaha Progress Tracker</h1>
+                  <p className="mt-4 text-xl font-semibold text-civic-blue">Tracking how Omaha is implementing its comprehensive plan.</p>
+                  <p className="mt-5 max-w-3xl text-lg leading-8 text-civic-muted">
+                    The Omaha Progress Tracker monitors how the comprehensive plan is being implemented and whether citywide and neighborhood conditions are changing over time.
+                  </p>
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    <a href="#implementation" className="rounded-xl bg-civic-blue px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-civic-ink">Track actions</a>
+                    <a href="#investments" className="rounded-xl border border-civic-line bg-white px-5 py-3 text-sm font-bold text-civic-ink shadow-sm hover:bg-slate-50">Explore investments</a>
+                  </div>
+                </div>
+                <div className="rounded-3xl border border-white bg-white/85 p-4 shadow-civic">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {stats.map(([value, label]) => (
+                      <div key={label} className="rounded-2xl border border-civic-line bg-slate-50 p-4">
+                        <p className="text-3xl font-black text-civic-blue">{value}</p>
+                        <p className="mt-1 text-sm font-semibold leading-5 text-civic-muted">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 rounded-2xl bg-civic-ink p-5 text-white">
+                    <p className="text-sm font-bold uppercase tracking-[0.16em] text-sky-100">How to read the tracker</p>
+                    <div className="mt-4 grid gap-3 text-sm leading-6 sm:grid-cols-2">
+                      <p><strong>Actions</strong> show accountability.</p>
+                      <p><strong>Indicators</strong> show impact.</p>
+                      <p><strong>Investments</strong> show where resources are going.</p>
+                      <p><strong>Geography</strong> shows who and what areas are benefiting.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {goals.map(goal => (
+                  <article key={goal.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                    <div className="mb-4 h-1.5 w-16 rounded-full bg-civic-sky"></div>
+                    <h3 className="text-lg font-bold">{goal.name}</h3>
+                    <p className="mt-2 min-h-[72px] text-sm leading-6 text-civic-muted">{goal.desc}</p>
+                    <a href="#indicators" className="mt-4 inline-flex rounded-lg border border-civic-line px-3 py-2 text-sm font-bold text-civic-blue hover:bg-slate-50">View indicators</a>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function ImplementationTracker({ search, setSearch }) {
+        const [status, setStatus] = useState("All");
+        const [goal, setGoal] = useState("All");
+        const [timeframe, setTimeframe] = useState("All");
+        const [department, setDepartment] = useState("All");
+        const filtered = useMemo(() => actions.filter(action => {
+          const text = `${action.title} ${action.goal} ${action.department} ${action.indicators.join(" ")}`.toLowerCase();
+          return (!search || text.includes(search.toLowerCase())) &&
+            (status === "All" || action.status === status) &&
+            (goal === "All" || action.goal === goal) &&
+            (timeframe === "All" || action.timeframe === timeframe) &&
+            (department === "All" || action.department === department);
+        }), [status, goal, timeframe, department, search]);
+        return (
+          <section id="implementation" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Implementation Tracker" title="Plan actions and accountability">
+                Filter plan actions by status, goal area, timeframe, or lead department. Each action connects work programs to measurable outcomes.
+              </SectionHeading>
+              <div className="rounded-3xl border border-civic-line bg-white p-4 shadow-civic">
+                <div className="grid gap-3 md:grid-cols-5">
+                  <label className="md:col-span-1">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search</span>
+                    <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search actions or indicators" className="focus-ring w-full rounded-xl border border-civic-line px-3 py-2.5 text-sm shadow-sm" />
+                  </label>
+                  <Select label="Status" value={status} setValue={setStatus} options={["Not Started", "In Progress", "Completed", "Delayed", "Ongoing"]} />
+                  <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
+                  <Select label="Timeframe" value={timeframe} setValue={setTimeframe} options={["Short-term", "Medium-term", "Long-term"]} />
+                  <Select label="Department" value={department} setValue={setDepartment} options={[...new Set(actions.map(a => a.department))]} />
+                </div>
+                <div className="mt-5 overflow-hidden rounded-2xl border border-civic-line">
+                  <div className="hidden grid-cols-[1.5fr_0.75fr_0.85fr_0.65fr_1fr_1.1fr_0.7fr] gap-4 bg-slate-100 px-4 py-3 text-xs font-bold uppercase tracking-wide text-civic-muted lg:grid">
+                    <span>Action</span><span>Status</span><span>Lead</span><span>Timeframe</span><span>Goal</span><span>Related indicators</span><span>Funding</span>
+                  </div>
+                  {filtered.map(action => (
+                    <article key={action.title} className="grid gap-4 border-t border-civic-line bg-white px-4 py-4 first:border-t-0 lg:grid-cols-[1.5fr_0.75fr_0.85fr_0.65fr_1fr_1.1fr_0.7fr] lg:items-center">
+                      <h3 className="text-sm font-bold leading-6">{action.title}</h3>
+                      <Badge>{action.status}</Badge>
+                      <p className="text-sm text-civic-muted">{action.department}</p>
+                      <p className="text-sm font-semibold">{action.timeframe}</p>
+                      <p className="text-sm text-civic-muted">{action.goal}</p>
+                      <p className="text-sm leading-6 text-civic-muted">{action.indicators.join(", ")}</p>
+                      <Badge>{action.funding}</Badge>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function IndicatorsDashboard({ search, setSearch }) {
+        const [goal, setGoal] = useState("All");
+        const [status, setStatus] = useState("All");
+        const [year, setYear] = useState("All");
+        const [geo, setGeo] = useState("All");
+        const [tab, setTab] = useState("All");
+        const selectedGoal = tab !== "All" ? tab : goal;
+        const filtered = useMemo(() => indicators.filter(indicator => {
+          const text = `${indicator.name} ${indicator.goal} ${indicator.why}`.toLowerCase();
+          return (!search || text.includes(search.toLowerCase())) &&
+            (selectedGoal === "All" || indicator.goal === selectedGoal) &&
+            (status === "All" || indicator.status === status) &&
+            (year === "All" || indicator.year === year);
+        }), [search, selectedGoal, status, year]);
+        return (
+          <section id="indicators" className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Indicators Dashboard" title="Measures of plan impact">
+                Indicators show whether citywide and neighborhood conditions are improving, stable, or need continued attention.
+              </SectionHeading>
+              <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
+                {["All", ...goals.map(g => g.name)].map(name => (
+                  <button key={name} onClick={() => setTab(name)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold ring-1 ${tab === name ? "bg-civic-blue text-white ring-civic-blue" : "bg-white text-civic-muted ring-civic-line hover:text-civic-ink"}`}>{name}</button>
+                ))}
+              </div>
+              <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-5">
+                <label>
+                  <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search</span>
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line px-3 py-2.5 text-sm shadow-sm" />
+                </label>
+                <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
+                <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Planning District", "Neighborhood Area", "Priority Corridor"]} />
+                <Select label="Year" value={year} setValue={setYear} options={["2027", "2026", "2025"]} />
+                <Select label="Indicator Status" value={status} setValue={setStatus} options={["Improving", "Stable", "Needs Attention"]} />
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {filtered.map(indicator => (
+                  <article key={indicator.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wide text-civic-blue">{indicator.goal}</p>
+                        <h3 className="mt-1 text-lg font-bold leading-6">{indicator.name}</h3>
+                      </div>
+                      <Badge>{indicator.status}</Badge>
+                    </div>
+                    <div className="mt-4 flex items-end justify-between">
+                      <p className="text-3xl font-black text-civic-ink">{indicator.value}</p>
+                      <p className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-civic-muted">{indicator.direction}</p>
+                    </div>
+                    <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
+                      <div className={`h-full rounded-full ${indicator.status === "Needs Attention" ? "bg-civic-red" : indicator.status === "Stable" ? "bg-civic-sky" : "bg-civic-green"}`} style={{ width: `${indicator.progress}%` }}></div>
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-civic-muted">{indicator.why}</p>
+                    <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-civic-muted">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1">Updated {indicator.year}</span>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1">Related plan goal</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function ExploreAreas() {
+        const [geoType, setGeoType] = useState("Neighborhood Area");
+        return (
+          <section id="areas" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Explore by Area" title="See who and what areas are benefiting">
+                Geography helps residents understand how plan actions and public investments are showing up in different parts of Omaha.
+              </SectionHeading>
+              <div className="mb-6 flex flex-wrap justify-center gap-2">
+                {["Citywide", "City Council District", "Planning District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
+                  <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-bold ring-1 ${geoType === type ? "bg-civic-blue text-white ring-civic-blue" : "bg-white text-civic-muted ring-civic-line"}`}>{type}</button>
+                ))}
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {areaProfiles.map(area => (
+                  <article key={area.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-xl font-black">{area.name}</h3>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-civic-muted">{geoType}</span>
+                    </div>
+                    <dl className="mt-5 space-y-4 text-sm leading-6">
+                      <div><dt className="font-bold text-civic-ink">Key priorities from engagement</dt><dd className="mt-1 text-civic-muted">{area.priorities}</dd></div>
+                      <div><dt className="font-bold text-civic-ink">Current projects</dt><dd className="mt-1 text-civic-muted">{area.projects}</dd></div>
+                      <div><dt className="font-bold text-civic-ink">Key indicators</dt><dd className="mt-1 text-civic-muted">{area.indicators}</dd></div>
+                    </dl>
+                    <div className="mt-5 rounded-xl bg-slate-50 p-3 text-sm font-bold text-civic-blue">Progress status: {area.status}</div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function InvestmentMap() {
+        const layers = ["Capital Improvement Projects", "Housing Investments", "Transportation Projects", "Parks and Public Space Projects", "Economic Development Projects", "Planning Initiatives", "Priority Corridors", "Historically Underserved Areas"];
+        const [activeLayers, setActiveLayers] = useState(layers.slice(0, 4));
+        const toggle = layer => setActiveLayers(prev => prev.includes(layer) ? prev.filter(item => item !== layer) : [...prev, layer]);
+        return (
+          <section id="investments" className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Investment Map" title="Where public resources are going">
+                Public investments connect adopted plan priorities to capital projects, housing programs, corridor work, and neighborhood improvements.
+              </SectionHeading>
+              <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
+                <div className="rounded-3xl border border-civic-line bg-white p-5 shadow-sm">
+                  <h3 className="text-lg font-bold">Map layers</h3>
+                  <div className="mt-4 space-y-3">
+                    {layers.map(layer => (
+                      <label key={layer} className="flex cursor-pointer items-center gap-3 rounded-xl border border-civic-line p-3 text-sm font-semibold hover:bg-slate-50">
+                        <input type="checkbox" checked={activeLayers.includes(layer)} onChange={() => toggle(layer)} className="h-4 w-4 accent-civic-blue" />
+                        <span>{layer}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="overflow-hidden rounded-3xl border border-civic-line bg-white shadow-civic">
+                  <div className="map-grid relative min-h-[430px] bg-[#e8f0ed]">
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(63,125,88,.18),transparent_32%),linear-gradient(45deg,transparent_58%,rgba(34,87,122,.17)_58%,rgba(34,87,122,.17)_62%,transparent_62%)]"></div>
+                    {investments.map((project, index) => (
+                      <div key={project} className="absolute rounded-full border-2 border-white bg-civic-blue px-3 py-1 text-xs font-bold text-white shadow-lg" style={{ left: `${12 + (index * 11) % 72}%`, top: `${18 + (index * 17) % 62}%` }}>
+                        {index + 1}
+                      </div>
+                    ))}
+                    <div className="absolute bottom-4 left-4 max-w-sm rounded-2xl bg-white/92 p-4 shadow-sm">
+                      <p className="text-sm font-bold">Styled GIS placeholder</p>
+                      <p className="mt-1 text-sm leading-6 text-civic-muted">Future versions could connect these layers to city GIS services, capital improvement records, and program data.</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-3 border-t border-civic-line p-4 md:grid-cols-2">
+                    {investments.map((project, index) => (
+                      <article key={project} className="rounded-xl bg-slate-50 p-3">
+                        <p className="text-sm font-bold"><span className="mr-2 inline-grid h-6 w-6 place-items-center rounded-full bg-civic-blue text-xs text-white">{index + 1}</span>{project}</p>
+                        <p className="mt-2 text-xs font-semibold text-civic-muted">Sample project card - funding, phase, geography, and related indicators can be added.</p>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function CommunityPriorities() {
+        return (
+          <section id="priorities" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <SectionHeading eyebrow="Community Priorities" title="From engagement themes to measurable outcomes">
+                Community input helped shape the plan's priorities. This tracker shows how those priorities are being translated into actions, investments, and measurable outcomes.
+              </SectionHeading>
+              <div className="overflow-hidden rounded-3xl border border-civic-line bg-white shadow-civic">
+                <div className="hidden grid-cols-3 gap-4 bg-slate-100 px-5 py-3 text-xs font-bold uppercase tracking-wide text-civic-muted md:grid">
+                  <span>Engagement Theme</span><span>Related Plan Goal</span><span>Related Indicator</span>
+                </div>
+                {priorityRows.map(row => (
+                  <div key={row[0]} className="grid gap-3 border-t border-civic-line px-5 py-4 text-sm first:border-t-0 md:grid-cols-3">
+                    <p className="font-bold">{row[0]}</p>
+                    <p className="text-civic-muted">{row[1]}</p>
+                    <p className="text-civic-muted">{row[2]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function ReportsAndMethods() {
+        const methods = [
+          ["Indicator Definition", "Plain-language definition of what the measure captures and why it was selected."],
+          ["Data Source", "Primary source, stewarding agency, and any transformations used in the dashboard."],
+          ["Update Frequency", "How often the measure is refreshed, such as annually, quarterly, or when new data is released."],
+          ["Geography", "Whether the measure is available citywide, by council district, planning district, corridor, or neighborhood area."],
+          ["Baseline Year", "The first year used to compare future progress against plan adoption conditions."],
+          ["Direction of Desired Change", "Whether the plan expects the value to increase, decrease, or be monitored."],
+          ["Limitations", "Known caveats, missing data, confidence issues, or interpretation notes for public users."]
+        ];
+        return (
+          <>
+            <section id="reports" className="px-4 py-16 sm:px-6 lg:px-8">
+              <div className="mx-auto max-w-7xl">
+                <SectionHeading eyebrow="Annual Reports" title="Progress over time">
+                  Annual reports summarize completed actions, investments, indicator trends, and areas needing continued attention.
+                </SectionHeading>
+                <div className="rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
+                  <p className="max-w-5xl text-lg leading-8">
+                    In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas needing continued attention include transit access, housing cost burden, infrastructure gaps, and investment in historically underserved neighborhoods.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    {["Download Annual Report", "View Completed Actions", "View Indicators Needing Attention", "View Public Investment Summary"].map(button => (
+                      <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-civic-ink hover:bg-slate-100">{button}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="methods" className="border-t border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+              <div className="mx-auto max-w-7xl">
+                <SectionHeading eyebrow="Data & Methods" title="Transparent methodology">
+                  Each indicator includes an "About this measure" explanation so residents can understand how progress is measured.
+                </SectionHeading>
+                <div className="mb-6 rounded-3xl border border-civic-line bg-white p-6 shadow-sm">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-civic-blue">About this measure</p>
+                  <h3 className="mt-2 text-2xl font-black">Infill Development</h3>
+                  <p className="mt-3 max-w-4xl text-base leading-7 text-civic-muted">
+                    Measures the share of new population and employment growth occurring in already developed areas. Higher infill development can support efficient infrastructure use, stronger corridors, more walkable communities, and reduced pressure on undeveloped land.
+                  </p>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {methods.map(([title, text]) => (
+                    <article key={title} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                      <h3 className="text-base font-bold">{title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-civic-muted">{text}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        );
+      }
+
+      function App() {
+        const [globalSearch, setGlobalSearch] = useState("");
+        return (
+          <>
+            <Header />
+            <main>
+              <Overview />
+              <ImplementationTracker search={globalSearch} setSearch={setGlobalSearch} />
+              <IndicatorsDashboard search={globalSearch} setSearch={setGlobalSearch} />
+              <ExploreAreas />
+              <InvestmentMap />
+              <CommunityPriorities />
+              <ReportsAndMethods />
+            </main>
+            <footer className="border-t border-civic-line bg-civic-ink px-4 py-8 text-center text-sm font-medium text-slate-200 sm:px-6 lg:px-8">
+              Omaha Progress Tracker is a sample public-facing implementation dashboard concept for tracking comprehensive plan progress.
+            </footer>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
