@@ -1,6 +1,6 @@
 # Omaha Progress Tracker
 
-A polished, public-facing React and Tailwind prototype for tracking comprehensive plan actions, indicators, investments, geography, community priorities, annual reporting, and data methods.
+A prototype/proposal for tracking comprehensive plan actions, indicators, investments, geography, community priorities, annual reporting, and data methods.
 
 ## GitHub Pages
 
