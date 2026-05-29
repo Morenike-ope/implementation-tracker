@@ -125,7 +125,7 @@
         ["Implementation Tracker", "implementation"],
         ["Indicators Dashboard", "indicators"],
         ["Explore by Area", "areas"],
-        ["Investment Map", "investments"],
+        ["Implementation Map", "investments"],
         ["Community Priorities", "priorities"],
         ["Annual Reports", "reports"],
         ["Data & Methods", "methods"]
@@ -480,7 +480,7 @@
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                 </label>
                 <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
-                <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Planning District", "Neighborhood Area", "Priority Corridor"]} />
+                <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Neighborhood Area", "Priority Corridor"]} />
                 <Select label="Year" value={year} setValue={setYear} options={["2027", "2026", "2025"]} />
                 <Select label="Indicator Status" value={status} setValue={setStatus} options={["Improving", "Stable", "Needs Attention"]} />
               </div>
@@ -523,7 +523,7 @@
                 Geography helps residents understand how plan actions and public investments are showing up in different parts of Omaha.
               </SectionHeading>
               <div className="mb-6 flex flex-wrap justify-center gap-2">
-                {["Citywide", "City Council District", "Planning District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
+                {["Citywide", "City Council District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
                   <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${geoType === type ? "bg-[#620603] text-white ring-[#620603]" : "bg-white/90 text-civic-muted ring-civic-line"}`}>{type}</button>
                 ))}
               </div>
@@ -549,13 +549,13 @@
       }
 
       function InvestmentMap() {
-        const layers = ["Capital Improvement Projects", "Housing Investments", "Transportation Projects", "Parks and Public Space Projects", "Economic Development Projects", "Planning Initiatives", "Priority Corridors", "Historically Underserved Areas"];
+        const layers = ["Capital Improvement Projects", "Housing Investments", "Transportation Projects", "Parks Projects", "Economic Development Projects", "Planning Initiatives", "Priority Corridors", "Historically Underserved Areas"];
         const [activeLayers, setActiveLayers] = useState(layers.slice(0, 4));
         const toggle = layer => setActiveLayers(prev => prev.includes(layer) ? prev.filter(item => item !== layer) : [...prev, layer]);
         return (
           <section id="investments" className="px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
-              <SectionHeading eyebrow="Investment Map" title="Where public resources are going">
+              <SectionHeading eyebrow="Implementation Map" title="Where public resources are going">
                 Public investments connect adopted plan priorities to capital projects, housing programs, corridor work, and neighborhood improvements.
               </SectionHeading>
               <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
@@ -626,7 +626,7 @@
         ["Indicator Definition", "Plain-language definition of what the measure captures and why it was selected."],
         ["Data Source", "Primary source, stewarding agency, and any transformations used in the dashboard."],
         ["Update Frequency", "How often the measure is refreshed, such as annually, quarterly, or when new data is released."],
-        ["Geography", "Whether the measure is available citywide, by council district, planning district, corridor, or neighborhood area."],
+        ["Geography", "Whether the measure is available citywide, by council district, corridor, or neighborhood area."],
         ["Baseline Year", "The first year used to compare future progress against plan adoption conditions."],
         ["Direction of Desired Change", "Whether the plan expects the value to increase, decrease, or be monitored."],
         ["Limitations", "Known caveats, missing data, confidence issues, or interpretation notes for public users."]
