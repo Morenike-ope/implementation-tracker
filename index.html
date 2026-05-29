@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Omaha Progress Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <script src="./vendor/tailwindcss-cdn.js"></script>
     <script>
       tailwind.config = {
@@ -11,22 +14,34 @@
           extend: {
             colors: {
               civic: {
-                ink: "#17202a",
-                muted: "#566574",
-                blue: "#22577a",
-                sky: "#4b8fb8",
-                green: "#3f7d58",
-                gold: "#b7791f",
-                red: "#b34d4d",
-                cream: "#f7f5ef",
-                line: "#d9e1e7"
+                ink: "#620603",
+                muted: "#58595B",
+                blue: "#620603",
+                sky: "#FA4F1E",
+                green: "#39C1A1",
+                gold: "#F1BD51",
+                red: "#620603",
+                cream: "#f3f0e7",
+                line: "#d8d2c4",
+                sisal: "#D1CBBB",
+                orange: "#FA4F1E",
+                slate: "#58595B",
+                parks: "#39C1A1",
+                land: "#7A8F19",
+                health: "#7578E6",
+                arts: "#9B2D92",
+                economy: "#006057",
+                natural: "#F1BD51",
+                housing: "#7C9BA9",
+                mobility: "#0441BE",
+                peach: "#FFBE9A"
               }
             },
             boxShadow: {
-              civic: "0 18px 45px rgba(23, 32, 42, 0.08)"
+              civic: "0 18px 45px rgba(98, 6, 3, 0.10)"
             },
             fontFamily: {
-              sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "Arial", "sans-serif"]
+              sans: ["Montserrat", "ui-sans-serif", "system-ui", "Segoe UI", "Arial", "sans-serif"]
             }
           }
         }
@@ -38,17 +53,69 @@
     <style>
       html { scroll-behavior: smooth; }
       body {
+        color: #620603;
         background:
-          radial-gradient(circle at top left, rgba(75, 143, 184, 0.12), transparent 28rem),
-          linear-gradient(180deg, #f7f5ef 0%, #f4f7f8 46%, #f7f5ef 100%);
+          radial-gradient(circle at 8% 0%, rgba(250, 79, 30, 0.12), transparent 28rem),
+          radial-gradient(circle at 92% 18%, rgba(209, 203, 187, 0.42), transparent 30rem),
+          linear-gradient(180deg, #f7f3e9 0%, #f3f0e7 46%, #f8f5ee 100%);
+        min-height: 100vh;
+        position: relative;
+      }
+      body::before {
+        background-image: url("./assets/wmo-pattern.jpg");
+        background-position: top right;
+        background-repeat: no-repeat;
+        background-size: 900px auto;
+        content: "";
+        inset: 0;
+        opacity: 0.06;
+        pointer-events: none;
+        position: absolute;
+        z-index: -2;
+      }
+      body::after {
+        background:
+          radial-gradient(circle, transparent 0 30%, rgba(250, 79, 30, 0.16) 31% 34%, transparent 35%),
+          repeating-conic-gradient(from 8deg, rgba(98, 6, 3, 0.12) 0deg 4deg, transparent 4deg 9deg);
+        border-radius: 9999px;
+        content: "";
+        height: 760px;
+        left: -280px;
+        opacity: 0.09;
+        pointer-events: none;
+        position: absolute;
+        top: 48%;
+        width: 760px;
+        z-index: -1;
+      }
+      #root {
+        isolation: isolate;
       }
       .map-grid {
         background-image:
-          linear-gradient(rgba(34, 87, 122, 0.12) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(34, 87, 122, 0.12) 1px, transparent 1px);
+          linear-gradient(rgba(98, 6, 3, 0.13) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(98, 6, 3, 0.13) 1px, transparent 1px);
         background-size: 44px 44px;
       }
-      .focus-ring:focus { outline: 3px solid rgba(75, 143, 184, 0.35); outline-offset: 2px; }
+      .focus-ring:focus { outline: 3px solid rgba(250, 79, 30, 0.35); outline-offset: 2px; }
+      .brand-panel {
+        position: relative;
+        overflow: hidden;
+      }
+      .brand-panel::after {
+        background:
+          radial-gradient(circle, transparent 0 28%, rgba(250, 79, 30, 0.24) 29% 32%, transparent 33%),
+          repeating-conic-gradient(from 0deg, rgba(98, 6, 3, 0.16) 0deg 4deg, transparent 4deg 10deg);
+        border-radius: 9999px;
+        content: "";
+        height: 420px;
+        opacity: 0.22;
+        pointer-events: none;
+        position: absolute;
+        right: -160px;
+        top: -170px;
+        width: 420px;
+      }
     </style>
   </head>
   <body class="text-civic-ink antialiased">
@@ -76,6 +143,18 @@
         { name: "Equity & Neighborhood Investment", desc: "Shows whether investments are reaching historically underserved areas." },
         { name: "Fiscal Sustainability", desc: "Tracks whether growth patterns support efficient public services and infrastructure." }
       ];
+
+      const goalStyles = {
+        "Growth & Land Use": { color: "#7A8F19", tint: "rgba(122, 143, 25, 0.11)" },
+        "Housing Choice": { color: "#7C9BA9", tint: "rgba(124, 155, 169, 0.16)" },
+        "Mobility & Access": { color: "#0441BE", tint: "rgba(4, 65, 190, 0.10)" },
+        "Economic Opportunity": { color: "#006057", tint: "rgba(0, 96, 87, 0.11)" },
+        "Green Space & Resilience": { color: "#39C1A1", tint: "rgba(57, 193, 161, 0.13)" },
+        "Equity & Neighborhood Investment": { color: "#9B2D92", tint: "rgba(155, 45, 146, 0.10)" },
+        "Fiscal Sustainability": { color: "#F1BD51", tint: "rgba(241, 189, 81, 0.18)" }
+      };
+
+      const goalStyle = name => goalStyles[name] || { color: "#620603", tint: "rgba(209, 203, 187, 0.28)" };
 
       const actions = [
         {
@@ -206,28 +285,28 @@
       ];
 
       const statusStyles = {
-        "Improving": "bg-green-50 text-green-800 ring-green-200",
-        "Stable": "bg-sky-50 text-sky-800 ring-sky-200",
-        "Needs Attention": "bg-red-50 text-red-800 ring-red-200",
-        "Completed": "bg-green-50 text-green-800 ring-green-200",
-        "In Progress": "bg-blue-50 text-blue-800 ring-blue-200",
-        "Delayed": "bg-red-50 text-red-800 ring-red-200",
-        "Ongoing": "bg-amber-50 text-amber-800 ring-amber-200",
-        "Not Started": "bg-slate-100 text-slate-700 ring-slate-200",
-        "Funded": "bg-green-50 text-green-800 ring-green-200",
-        "Partially Funded": "bg-amber-50 text-amber-800 ring-amber-200",
-        "Unfunded": "bg-slate-100 text-slate-700 ring-slate-200"
+        "Improving": "bg-[#e8f7f3] text-[#006057] ring-[#39C1A1]/35",
+        "Stable": "bg-[#eef1f3] text-[#58595B] ring-[#7C9BA9]/45",
+        "Needs Attention": "bg-[#f6e8e7] text-[#620603] ring-[#620603]/25",
+        "Completed": "bg-[#e8f7f3] text-[#006057] ring-[#39C1A1]/35",
+        "In Progress": "bg-[#eaf0ff] text-[#0441BE] ring-[#0441BE]/25",
+        "Delayed": "bg-[#f6e8e7] text-[#620603] ring-[#620603]/25",
+        "Ongoing": "bg-[#fff3da] text-[#620603] ring-[#F1BD51]/55",
+        "Not Started": "bg-[#efede7] text-[#58595B] ring-[#D1CBBB]",
+        "Funded": "bg-[#e8f7f3] text-[#006057] ring-[#39C1A1]/35",
+        "Partially Funded": "bg-[#fff3da] text-[#620603] ring-[#F1BD51]/55",
+        "Unfunded": "bg-[#efede7] text-[#58595B] ring-[#D1CBBB]"
       };
 
       function Badge({ children }) {
-        return <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${statusStyles[children] || "bg-slate-100 text-slate-700 ring-slate-200"}`}>{children}</span>;
+        return <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${statusStyles[children] || "bg-[#efede7] text-[#58595B] ring-[#D1CBBB]"}`}>{children}</span>;
       }
 
       function SectionHeading({ eyebrow, title, children }) {
         return (
           <div className="mx-auto mb-7 max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-civic-blue">{eyebrow}</p>
-            <h2 className="mt-2 text-3xl font-bold text-civic-ink sm:text-4xl">{title}</h2>
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-civic-ink">{eyebrow}</p>
+            <h2 className="mt-2 text-3xl font-extrabold text-civic-ink sm:text-4xl">{title}</h2>
             {children && <p className="mt-3 text-base leading-7 text-civic-muted">{children}</p>}
           </div>
         );
@@ -237,7 +316,7 @@
         return (
           <label className="block">
             <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">{label}</span>
-            <select value={value} onChange={e => setValue(e.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white px-3 py-2.5 text-sm font-medium text-civic-ink shadow-sm">
+            <select value={value} onChange={e => setValue(e.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm font-semibold text-civic-ink shadow-sm">
               <option>All</option>
               {options.map(option => <option key={option}>{option}</option>)}
             </select>
@@ -247,21 +326,21 @@
 
       function Header() {
         return (
-          <header className="sticky top-0 z-40 border-b border-white/70 bg-white/90 backdrop-blur">
+          <header className="sticky top-0 z-40 border-b border-civic-line bg-[#f8f5ee]/92 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-              <a href="#overview" className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-civic-blue text-sm font-black text-white">OP</span>
+              <a href="#overview" className="flex items-center gap-3" aria-label="Omaha Progress Tracker home">
+                <img src="./assets/we-make-omaha-logo.jpg" alt="We Make Omaha" className="h-10 w-32 rounded-sm object-contain object-left sm:w-40" />
                 <span>
-                  <span className="block text-base font-bold leading-tight">Omaha Progress Tracker</span>
-                  <span className="hidden text-xs text-civic-muted sm:block">Comprehensive plan implementation dashboard</span>
+                  <span className="block text-sm font-extrabold leading-tight text-civic-ink sm:text-base">Omaha Progress Tracker</span>
+                  <span className="hidden text-xs font-semibold text-civic-muted sm:block">Comprehensive plan dashboard</span>
                 </span>
               </a>
               <nav className="hidden max-w-4xl flex-wrap justify-end gap-1 lg:flex">
                 {navItems.map(([label, id]) => (
-                  <a key={id} href={`#${id}`} className="rounded-lg px-3 py-2 text-sm font-semibold text-civic-muted hover:bg-slate-100 hover:text-civic-ink">{label}</a>
+                  <a key={id} href={`#${id}`} className="rounded-lg px-3 py-2 text-sm font-bold text-civic-muted hover:bg-[#efe9dc] hover:text-civic-ink">{label}</a>
                 ))}
               </nav>
-              <a href="#indicators" className="rounded-xl bg-civic-blue px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-civic-ink">View Dashboard</a>
+              <a href="#indicators" className="rounded-xl bg-civic-ink px-4 py-2.5 text-sm font-extrabold text-white shadow-sm hover:bg-[#410402]">View dashboard</a>
             </div>
           </header>
         );
@@ -280,29 +359,30 @@
           <section id="overview" className="px-4 pb-16 pt-10 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.22em] text-civic-blue">Public implementation dashboard</p>
+                <div className="relative">
+                  <div className="mb-6 h-1.5 w-24 rounded-full bg-civic-orange"></div>
+                  <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-civic-ink">Public implementation dashboard</p>
                   <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-civic-ink sm:text-6xl">Omaha Progress Tracker</h1>
-                  <p className="mt-4 text-xl font-semibold text-civic-blue">Tracking how Omaha is implementing its comprehensive plan.</p>
+                  <p className="mt-4 text-xl font-bold text-civic-muted">Tracking how Omaha is implementing its comprehensive plan.</p>
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-civic-muted">
                     The Omaha Progress Tracker monitors how the comprehensive plan is being implemented and whether citywide and neighborhood conditions are changing over time.
                   </p>
                   <div className="mt-7 flex flex-wrap gap-3">
-                    <a href="#implementation" className="rounded-xl bg-civic-blue px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-civic-ink">Track actions</a>
-                    <a href="#investments" className="rounded-xl border border-civic-line bg-white px-5 py-3 text-sm font-bold text-civic-ink shadow-sm hover:bg-slate-50">Explore investments</a>
+                    <a href="#implementation" className="rounded-xl bg-civic-ink px-5 py-3 text-sm font-extrabold text-white shadow-sm hover:bg-[#410402]">Track actions</a>
+                    <a href="#investments" className="rounded-xl border border-civic-line bg-white/90 px-5 py-3 text-sm font-extrabold text-civic-ink shadow-sm hover:bg-[#efe9dc]">Explore investments</a>
                   </div>
                 </div>
-                <div className="rounded-3xl border border-white bg-white/85 p-4 shadow-civic">
+                <div className="brand-panel rounded-3xl border border-white bg-white/88 p-4 shadow-civic">
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {stats.map(([value, label]) => (
-                      <div key={label} className="rounded-2xl border border-civic-line bg-slate-50 p-4">
-                        <p className="text-3xl font-black text-civic-blue">{value}</p>
+                      <div key={label} className="relative z-10 rounded-2xl border border-civic-line bg-[#f8f5ee]/90 p-4">
+                        <p className="text-3xl font-black text-civic-ink">{value}</p>
                         <p className="mt-1 text-sm font-semibold leading-5 text-civic-muted">{label}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 rounded-2xl bg-civic-ink p-5 text-white">
-                    <p className="text-sm font-bold uppercase tracking-[0.16em] text-sky-100">How to read the tracker</p>
+                  <div className="relative z-10 mt-4 rounded-2xl bg-civic-ink p-5 text-white">
+                    <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#FFBE9A]">How to read the tracker</p>
                     <div className="mt-4 grid gap-3 text-sm leading-6 sm:grid-cols-2">
                       <p><strong>Actions</strong> show accountability.</p>
                       <p><strong>Indicators</strong> show impact.</p>
@@ -314,11 +394,11 @@
               </div>
               <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {goals.map(goal => (
-                  <article key={goal.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
-                    <div className="mb-4 h-1.5 w-16 rounded-full bg-civic-sky"></div>
-                    <h3 className="text-lg font-bold">{goal.name}</h3>
+                  <article key={goal.name} className="rounded-2xl border border-civic-line bg-white/92 p-5 shadow-sm" style={{ borderTop: `6px solid ${goalStyle(goal.name).color}`, background: `linear-gradient(180deg, ${goalStyle(goal.name).tint}, rgba(255,255,255,0.94) 42%)` }}>
+                    <div className="mb-4 h-1.5 w-16 rounded-full" style={{ backgroundColor: goalStyle(goal.name).color }}></div>
+                    <h3 className="text-lg font-extrabold">{goal.name}</h3>
                     <p className="mt-2 min-h-[72px] text-sm leading-6 text-civic-muted">{goal.desc}</p>
-                    <a href="#indicators" className="mt-4 inline-flex rounded-lg border border-civic-line px-3 py-2 text-sm font-bold text-civic-blue hover:bg-slate-50">View indicators</a>
+                    <a href="#indicators" className="mt-4 inline-flex rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</a>
                   </article>
                 ))}
               </div>
@@ -341,7 +421,7 @@
             (department === "All" || action.department === department);
         }), [status, goal, timeframe, department, search]);
         return (
-          <section id="implementation" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+          <section id="implementation" className="border-y border-civic-line bg-[#efe9dc]/68 px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <SectionHeading eyebrow="Implementation Tracker" title="Plan actions and accountability">
                 Filter plan actions by status, goal area, timeframe, or lead department. Each action connects work programs to measurable outcomes.
@@ -350,7 +430,7 @@
                 <div className="grid gap-3 md:grid-cols-5">
                   <label className="md:col-span-1">
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search</span>
-                    <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search actions or indicators" className="focus-ring w-full rounded-xl border border-civic-line px-3 py-2.5 text-sm shadow-sm" />
+                    <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search actions or indicators" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                   </label>
                   <Select label="Status" value={status} setValue={setStatus} options={["Not Started", "In Progress", "Completed", "Delayed", "Ongoing"]} />
                   <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
@@ -358,7 +438,7 @@
                   <Select label="Department" value={department} setValue={setDepartment} options={[...new Set(actions.map(a => a.department))]} />
                 </div>
                 <div className="mt-5 overflow-hidden rounded-2xl border border-civic-line">
-                  <div className="hidden grid-cols-[1.5fr_0.75fr_0.85fr_0.65fr_1fr_1.1fr_0.7fr] gap-4 bg-slate-100 px-4 py-3 text-xs font-bold uppercase tracking-wide text-civic-muted lg:grid">
+                  <div className="hidden grid-cols-[1.5fr_0.75fr_0.85fr_0.65fr_1fr_1.1fr_0.7fr] gap-4 bg-[#f3f0e7] px-4 py-3 text-xs font-extrabold uppercase tracking-wide text-civic-muted lg:grid">
                     <span>Action</span><span>Status</span><span>Lead</span><span>Timeframe</span><span>Goal</span><span>Related indicators</span><span>Funding</span>
                   </div>
                   {filtered.map(action => (
@@ -401,13 +481,13 @@
               </SectionHeading>
               <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
                 {["All", ...goals.map(g => g.name)].map(name => (
-                  <button key={name} onClick={() => setTab(name)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold ring-1 ${tab === name ? "bg-civic-blue text-white ring-civic-blue" : "bg-white text-civic-muted ring-civic-line hover:text-civic-ink"}`}>{name}</button>
+                  <button key={name} onClick={() => setTab(name)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${tab === name ? "bg-civic-ink text-white ring-civic-ink" : "bg-white/90 text-civic-muted ring-civic-line hover:text-civic-ink"}`} style={tab === name && name !== "All" ? { boxShadow: `inset 0 -4px 0 ${goalStyle(name).color}` } : {}}>{name}</button>
                 ))}
               </div>
               <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-5">
                 <label>
                   <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search</span>
-                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line px-3 py-2.5 text-sm shadow-sm" />
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                 </label>
                 <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
                 <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Planning District", "Neighborhood Area", "Priority Corridor"]} />
@@ -416,25 +496,25 @@
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {filtered.map(indicator => (
-                  <article key={indicator.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
+                  <article key={indicator.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm" style={{ borderTop: `5px solid ${goalStyle(indicator.goal).color}` }}>
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-civic-blue">{indicator.goal}</p>
-                        <h3 className="mt-1 text-lg font-bold leading-6">{indicator.name}</h3>
+                        <p className="text-xs font-extrabold uppercase tracking-wide" style={{ color: goalStyle(indicator.goal).color }}>{indicator.goal}</p>
+                        <h3 className="mt-1 text-lg font-extrabold leading-6">{indicator.name}</h3>
                       </div>
                       <Badge>{indicator.status}</Badge>
                     </div>
                     <div className="mt-4 flex items-end justify-between">
                       <p className="text-3xl font-black text-civic-ink">{indicator.value}</p>
-                      <p className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-civic-muted">{indicator.direction}</p>
+                      <p className="rounded-lg bg-[#f3f0e7] px-2.5 py-1 text-xs font-extrabold text-civic-muted">{indicator.direction}</p>
                     </div>
-                    <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
-                      <div className={`h-full rounded-full ${indicator.status === "Needs Attention" ? "bg-civic-red" : indicator.status === "Stable" ? "bg-civic-sky" : "bg-civic-green"}`} style={{ width: `${indicator.progress}%` }}></div>
+                    <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[#efede7]">
+                      <div className="h-full rounded-full" style={{ width: `${indicator.progress}%`, backgroundColor: indicator.status === "Needs Attention" ? "#620603" : indicator.status === "Stable" ? "#7C9BA9" : goalStyle(indicator.goal).color }}></div>
                     </div>
                     <p className="mt-4 text-sm leading-6 text-civic-muted">{indicator.why}</p>
                     <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-civic-muted">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1">Updated {indicator.year}</span>
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1">Related plan goal</span>
+                      <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1">Updated {indicator.year}</span>
+                      <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1">Related plan goal</span>
                     </div>
                   </article>
                 ))}
@@ -447,14 +527,14 @@
       function ExploreAreas() {
         const [geoType, setGeoType] = useState("Neighborhood Area");
         return (
-          <section id="areas" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+          <section id="areas" className="border-y border-civic-line bg-[#efe9dc]/68 px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <SectionHeading eyebrow="Explore by Area" title="See who and what areas are benefiting">
                 Geography helps residents understand how plan actions and public investments are showing up in different parts of Omaha.
               </SectionHeading>
               <div className="mb-6 flex flex-wrap justify-center gap-2">
                 {["Citywide", "City Council District", "Planning District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
-                  <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-bold ring-1 ${geoType === type ? "bg-civic-blue text-white ring-civic-blue" : "bg-white text-civic-muted ring-civic-line"}`}>{type}</button>
+                  <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${geoType === type ? "bg-civic-ink text-white ring-civic-ink" : "bg-white/90 text-civic-muted ring-civic-line"}`}>{type}</button>
                 ))}
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -462,14 +542,14 @@
                   <article key={area.name} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="text-xl font-black">{area.name}</h3>
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-civic-muted">{geoType}</span>
+                      <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1 text-xs font-bold text-civic-muted">{geoType}</span>
                     </div>
                     <dl className="mt-5 space-y-4 text-sm leading-6">
                       <div><dt className="font-bold text-civic-ink">Key priorities from engagement</dt><dd className="mt-1 text-civic-muted">{area.priorities}</dd></div>
                       <div><dt className="font-bold text-civic-ink">Current projects</dt><dd className="mt-1 text-civic-muted">{area.projects}</dd></div>
                       <div><dt className="font-bold text-civic-ink">Key indicators</dt><dd className="mt-1 text-civic-muted">{area.indicators}</dd></div>
                     </dl>
-                    <div className="mt-5 rounded-xl bg-slate-50 p-3 text-sm font-bold text-civic-blue">Progress status: {area.status}</div>
+                    <div className="mt-5 rounded-xl border-l-4 border-civic-orange bg-[#f3f0e7] p-3 text-sm font-extrabold text-civic-ink">Progress status: {area.status}</div>
                   </article>
                 ))}
               </div>
@@ -490,33 +570,33 @@
               </SectionHeading>
               <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
                 <div className="rounded-3xl border border-civic-line bg-white p-5 shadow-sm">
-                  <h3 className="text-lg font-bold">Map layers</h3>
+                  <h3 className="text-lg font-extrabold">Map layers</h3>
                   <div className="mt-4 space-y-3">
                     {layers.map(layer => (
-                      <label key={layer} className="flex cursor-pointer items-center gap-3 rounded-xl border border-civic-line p-3 text-sm font-semibold hover:bg-slate-50">
-                        <input type="checkbox" checked={activeLayers.includes(layer)} onChange={() => toggle(layer)} className="h-4 w-4 accent-civic-blue" />
+                      <label key={layer} className="flex cursor-pointer items-center gap-3 rounded-xl border border-civic-line bg-white/70 p-3 text-sm font-semibold hover:bg-[#f3f0e7]">
+                        <input type="checkbox" checked={activeLayers.includes(layer)} onChange={() => toggle(layer)} className="h-4 w-4 accent-civic-orange" />
                         <span>{layer}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div className="overflow-hidden rounded-3xl border border-civic-line bg-white shadow-civic">
-                  <div className="map-grid relative min-h-[430px] bg-[#e8f0ed]">
-                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(63,125,88,.18),transparent_32%),linear-gradient(45deg,transparent_58%,rgba(34,87,122,.17)_58%,rgba(34,87,122,.17)_62%,transparent_62%)]"></div>
+                  <div className="map-grid relative min-h-[430px] bg-[#e9e3d5]">
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(57,193,161,.20),transparent_32%),linear-gradient(45deg,transparent_58%,rgba(4,65,190,.13)_58%,rgba(4,65,190,.13)_62%,transparent_62%)]"></div>
                     {investments.map((project, index) => (
-                      <div key={project} className="absolute rounded-full border-2 border-white bg-civic-blue px-3 py-1 text-xs font-bold text-white shadow-lg" style={{ left: `${12 + (index * 11) % 72}%`, top: `${18 + (index * 17) % 62}%` }}>
+                      <div key={project} className="absolute rounded-full border-2 border-white bg-civic-ink px-3 py-1 text-xs font-bold text-white shadow-lg" style={{ left: `${12 + (index * 11) % 72}%`, top: `${18 + (index * 17) % 62}%` }}>
                         {index + 1}
                       </div>
                     ))}
-                    <div className="absolute bottom-4 left-4 max-w-sm rounded-2xl bg-white/92 p-4 shadow-sm">
-                      <p className="text-sm font-bold">Styled GIS placeholder</p>
+                    <div className="absolute bottom-4 left-4 max-w-sm rounded-2xl bg-white p-4 shadow-sm">
+                      <p className="text-sm font-extrabold">Styled GIS placeholder</p>
                       <p className="mt-1 text-sm leading-6 text-civic-muted">Future versions could connect these layers to city GIS services, capital improvement records, and program data.</p>
                     </div>
                   </div>
                   <div className="grid gap-3 border-t border-civic-line p-4 md:grid-cols-2">
                     {investments.map((project, index) => (
-                      <article key={project} className="rounded-xl bg-slate-50 p-3">
-                        <p className="text-sm font-bold"><span className="mr-2 inline-grid h-6 w-6 place-items-center rounded-full bg-civic-blue text-xs text-white">{index + 1}</span>{project}</p>
+                      <article key={project} className="rounded-xl bg-[#f3f0e7] p-3">
+                        <p className="text-sm font-bold"><span className="mr-2 inline-grid h-6 w-6 place-items-center rounded-full bg-civic-ink text-xs text-white">{index + 1}</span>{project}</p>
                         <p className="mt-2 text-xs font-semibold text-civic-muted">Sample project card - funding, phase, geography, and related indicators can be added.</p>
                       </article>
                     ))}
@@ -530,13 +610,13 @@
 
       function CommunityPriorities() {
         return (
-          <section id="priorities" className="border-y border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+          <section id="priorities" className="border-y border-civic-line bg-[#efe9dc]/68 px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <SectionHeading eyebrow="Community Priorities" title="From engagement themes to measurable outcomes">
                 Community input helped shape the plan's priorities. This tracker shows how those priorities are being translated into actions, investments, and measurable outcomes.
               </SectionHeading>
               <div className="overflow-hidden rounded-3xl border border-civic-line bg-white shadow-civic">
-                <div className="hidden grid-cols-3 gap-4 bg-slate-100 px-5 py-3 text-xs font-bold uppercase tracking-wide text-civic-muted md:grid">
+                <div className="hidden grid-cols-3 gap-4 bg-[#f3f0e7] px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-civic-muted md:grid">
                   <span>Engagement Theme</span><span>Related Plan Goal</span><span>Related Indicator</span>
                 </div>
                 {priorityRows.map(row => (
@@ -569,25 +649,25 @@
                 <SectionHeading eyebrow="Annual Reports" title="Progress over time">
                   Annual reports summarize completed actions, investments, indicator trends, and areas needing continued attention.
                 </SectionHeading>
-                <div className="rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
+                <div className="brand-panel rounded-3xl border border-civic-line bg-civic-ink p-6 text-white shadow-civic md:p-8">
                   <p className="max-w-5xl text-lg leading-8">
                     In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas needing continued attention include transit access, housing cost burden, infrastructure gaps, and investment in historically underserved neighborhoods.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     {["Download Annual Report", "View Completed Actions", "View Indicators Needing Attention", "View Public Investment Summary"].map(button => (
-                      <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-civic-ink hover:bg-slate-100">{button}</button>
+                      <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-civic-ink hover:bg-[#f3f0e7]">{button}</button>
                     ))}
                   </div>
                 </div>
               </div>
             </section>
-            <section id="methods" className="border-t border-civic-line bg-white/70 px-4 py-16 sm:px-6 lg:px-8">
+            <section id="methods" className="border-t border-civic-line bg-[#efe9dc]/68 px-4 py-16 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-7xl">
                 <SectionHeading eyebrow="Data & Methods" title="Transparent methodology">
                   Each indicator includes an "About this measure" explanation so residents can understand how progress is measured.
                 </SectionHeading>
                 <div className="mb-6 rounded-3xl border border-civic-line bg-white p-6 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-civic-blue">About this measure</p>
+                  <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-civic-ink">About this measure</p>
                   <h3 className="mt-2 text-2xl font-black">Infill Development</h3>
                   <p className="mt-3 max-w-4xl text-base leading-7 text-civic-muted">
                     Measures the share of new population and employment growth occurring in already developed areas. Higher infill development can support efficient infrastructure use, stronger corridors, more walkable communities, and reduced pressure on undeveloped land.
@@ -596,7 +676,7 @@
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                   {methods.map(([title, text]) => (
                     <article key={title} className="rounded-2xl border border-civic-line bg-white p-5 shadow-sm">
-                      <h3 className="text-base font-bold">{title}</h3>
+                      <h3 className="text-base font-extrabold">{title}</h3>
                       <p className="mt-2 text-sm leading-6 text-civic-muted">{text}</p>
                     </article>
                   ))}
@@ -621,7 +701,7 @@
               <CommunityPriorities />
               <ReportsAndMethods />
             </main>
-            <footer className="border-t border-civic-line bg-civic-ink px-4 py-8 text-center text-sm font-medium text-slate-200 sm:px-6 lg:px-8">
+            <footer className="border-t border-civic-line bg-civic-ink px-4 py-8 text-center text-sm font-semibold text-[#f3f0e7] sm:px-6 lg:px-8">
               Omaha Progress Tracker is a sample public-facing implementation dashboard concept for tracking comprehensive plan progress.
             </footer>
           </>
