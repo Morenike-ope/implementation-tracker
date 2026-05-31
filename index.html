@@ -322,16 +322,24 @@
       }
 
       function Header({ activeSection, setActiveSection }) {
+        const trackerTabs = navItems.filter(([, id]) => id !== "overview");
         return (
           <header className="sticky top-0 z-40 border-b border-civic-line bg-white">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-              <button type="button" onClick={() => setActiveSection("overview")} className="focus-ring flex items-center rounded-lg" aria-label="Show overview">
+              <a href="https://wemake.omaha.gov/" className="focus-ring flex items-center rounded-lg" aria-label="Go to We Make Omaha website">
                 <img src="./assets/we-make-omaha-logo.jpg" alt="We Make Omaha" className="h-14 w-44 rounded-sm object-contain object-left sm:h-16 sm:w-56" />
-              </button>
-              <label className="flex w-full max-w-xs items-center gap-3 sm:max-w-sm">
-                <span className="hidden text-sm font-extrabold text-civic-ink sm:inline">Section</span>
-                <select value={activeSection} onChange={event => setActiveSection(event.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white px-3 py-2.5 text-sm font-extrabold text-civic-ink shadow-sm">
-                  {navItems.map(([label, id]) => (
+              </a>
+              <nav className="hidden flex-1 flex-nowrap items-center justify-end gap-1 overflow-x-auto xl:flex" aria-label="Tracker sections">
+                {trackerTabs.map(([label, id]) => (
+                  <button key={id} type="button" onClick={() => setActiveSection(id)} className={`whitespace-nowrap rounded-lg px-2.5 py-2 text-xs font-extrabold transition 2xl:px-3 2xl:text-sm ${activeSection === id ? "bg-[#620603] text-white" : "text-civic-muted hover:bg-[#f3f0e7] hover:text-[#111111]"}`}>
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              <label className="flex w-full max-w-xs xl:hidden">
+                <select value={activeSection === "overview" ? "" : activeSection} onChange={event => event.target.value && setActiveSection(event.target.value)} className="focus-ring w-full rounded-xl border border-civic-line bg-white px-3 py-2.5 text-sm font-extrabold text-civic-ink shadow-sm">
+                  <option value="">Sections</option>
+                  {trackerTabs.map(([label, id]) => (
                     <option key={id} value={id}>{label}</option>
                   ))}
                 </select>
@@ -341,7 +349,7 @@
         );
       }
 
-      function Overview() {
+      function Overview({ setActiveSection, setIndicatorGoal }) {
         const stats = [
           ["42", "indicators tracked"],
           ["18", "actions completed this year"],
@@ -388,7 +396,7 @@
                     <div className="mb-4 h-1.5 w-16 rounded-full" style={{ backgroundColor: goalStyle(goal.name).color }}></div>
                     <h3 className="text-lg font-extrabold text-[#111111]">{goal.name}</h3>
                     <p className="mt-2 min-h-[72px] text-sm leading-6 text-civic-muted">{goal.desc}</p>
-                    <a href="#indicators" className="mt-4 inline-flex rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</a>
+                    <button type="button" onClick={() => { setIndicatorGoal(goal.name); setActiveSection("indicators"); }} className="mt-4 inline-flex rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</button>
                   </article>
                 ))}
               </div>
@@ -449,12 +457,12 @@
         );
       }
 
-      function IndicatorsDashboard({ search, setSearch }) {
-        const [goal, setGoal] = useState("All");
+      function IndicatorsDashboard({ search, setSearch, initialGoal = "All" }) {
+        const [goal, setGoal] = useState(initialGoal);
         const [status, setStatus] = useState("All");
         const [year, setYear] = useState("All");
         const [geo, setGeo] = useState("All");
-        const [tab, setTab] = useState("All");
+        const [tab, setTab] = useState(initialGoal);
         const selectedGoal = tab !== "All" ? tab : goal;
         const filtered = useMemo(() => indicators.filter(indicator => {
           const text = `${indicator.name} ${indicator.goal} ${indicator.why}`.toLowerCase();
@@ -684,10 +692,17 @@
       function App() {
         const [globalSearch, setGlobalSearch] = useState("");
         const [activeSection, setActiveSection] = useState("overview");
+        const [indicatorGoal, setIndicatorGoal] = useState("All");
+        const showSection = section => {
+          if (section !== "indicators") {
+            setIndicatorGoal("All");
+          }
+          setActiveSection(section);
+        };
         const sectionComponents = {
-          overview: <Overview />,
+          overview: <Overview setActiveSection={setActiveSection} setIndicatorGoal={setIndicatorGoal} />,
           implementation: <ImplementationTracker search={globalSearch} setSearch={setGlobalSearch} />,
-          indicators: <IndicatorsDashboard search={globalSearch} setSearch={setGlobalSearch} />,
+          indicators: <IndicatorsDashboard key={indicatorGoal} search={globalSearch} setSearch={setGlobalSearch} initialGoal={indicatorGoal} />,
           areas: <ExploreAreas />,
           investments: <InvestmentMap />,
           priorities: <CommunityPriorities />,
@@ -695,15 +710,15 @@
           methods: <DataMethods />
         };
         return (
-          <>
-            <Header activeSection={activeSection} setActiveSection={setActiveSection} />
-            <main className="min-h-[calc(100vh-132px)]">
+          <div className="flex min-h-screen flex-col">
+            <Header activeSection={activeSection} setActiveSection={showSection} />
+            <main className="flex-1">
               {sectionComponents[activeSection]}
             </main>
-            <footer className="border-t border-civic-line bg-[#620603] px-4 py-8 text-center text-sm font-semibold text-[#f3f0e7] sm:px-6 lg:px-8">
+            <footer className="border-t border-civic-line bg-[#620603] px-6 py-[18px] text-center text-[0.85rem] font-semibold leading-5 text-white">
               Omaha Progress Tracker is a sample public-facing implementation dashboard concept for tracking comprehensive plan progress.
             </footer>
-          </>
+          </div>
         );
       }
 
