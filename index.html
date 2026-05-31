@@ -125,29 +125,29 @@
         ["Implementation Tracker", "implementation"],
         ["Indicators Dashboard", "indicators"],
         ["Explore by Area", "areas"],
-        ["Investment Map", "investments"],
+        ["Implementation Map", "investments"],
         ["Community Priorities", "priorities"],
         ["Annual Reports", "reports"],
         ["Data & Methods", "methods"]
       ];
 
       const goals = [
-        { name: "Growth & Land Use", desc: "Directs growth toward centers, corridors, and existing infrastructure." },
-        { name: "Housing Choice", desc: "Expands housing types, affordability, and neighborhood stability." },
-        { name: "Mobility & Access", desc: "Improves safe, connected access to transit, jobs, schools, parks, and daily needs." },
-        { name: "Economic Opportunity", desc: "Supports jobs, corridors, small businesses, and workforce pathways." },
-        { name: "Green Space & Resilience", desc: "Protects natural systems while expanding parks, trails, and climate resilience." },
-        { name: "Equity & Neighborhood Investment", desc: "Shows whether investments are reaching historically underserved areas." },
+        { name: "Land Use & Built Form", desc: "Directs growth toward centers, corridors, and existing infrastructure." },
+        { name: "Housing", desc: "Expands housing types, affordability, and neighborhood stability." },
+        { name: "Mobility", desc: "Improves safe, connected access to transit, jobs, schools, parks, and daily needs." },
+        { name: "Economic Development", desc: "Supports jobs, corridors, small businesses, and workforce pathways." },
+        { name: "Sustainability & Resiliency", desc: "Protects natural systems like native habitat, green spaces, waterways, and air quality, while expanding parks, trails, and climate resilience." },
+        { name: "Arts & Culture", desc: "Explores the connections between our growth and development with the arts, the many cultures represented by Omahans, and our rich history." },
         { name: "Fiscal Sustainability", desc: "Tracks whether growth patterns support efficient public services and infrastructure." }
       ];
 
       const goalStyles = {
-        "Growth & Land Use": { color: "#7A8F19", tint: "rgba(122, 143, 25, 0.11)" },
-        "Housing Choice": { color: "#7C9BA9", tint: "rgba(124, 155, 169, 0.16)" },
-        "Mobility & Access": { color: "#0441BE", tint: "rgba(4, 65, 190, 0.10)" },
-        "Economic Opportunity": { color: "#006057", tint: "rgba(0, 96, 87, 0.11)" },
-        "Green Space & Resilience": { color: "#39C1A1", tint: "rgba(57, 193, 161, 0.13)" },
-        "Equity & Neighborhood Investment": { color: "#9B2D92", tint: "rgba(155, 45, 146, 0.10)" },
+        "Land Use & Built Form": { color: "#7A8F19", tint: "rgba(122, 143, 25, 0.11)" },
+        "Housing": { color: "#7C9BA9", tint: "rgba(124, 155, 169, 0.16)" },
+        "Mobility": { color: "#0441BE", tint: "rgba(4, 65, 190, 0.10)" },
+        "Economic Development": { color: "#006057", tint: "rgba(0, 96, 87, 0.11)" },
+        "Sustainability & Resiliency": { color: "#39C1A1", tint: "rgba(57, 193, 161, 0.13)" },
+        "Arts & Culture": { color: "#9B2D92", tint: "rgba(155, 45, 146, 0.10)" },
         "Fiscal Sustainability": { color: "#F1BD51", tint: "rgba(241, 189, 81, 0.18)" }
       };
 
@@ -159,7 +159,7 @@
           status: "In Progress",
           department: "Planning",
           timeframe: "Short-term",
-          goal: "Growth & Land Use",
+          goal: "Land Use & Built Form",
           indicators: ["Growth in Centers and Corridors", "Infill Development"],
           funding: "Funded"
         },
@@ -168,7 +168,7 @@
           status: "Ongoing",
           department: "Public Works",
           timeframe: "Medium-term",
-          goal: "Mobility & Access",
+          goal: "Mobility",
           indicators: ["Households within a 15-Minute Walk of Transit", "Non-Auto Trip Share"],
           funding: "Partially Funded"
         },
@@ -177,7 +177,7 @@
           status: "Completed",
           department: "Housing and Community Development",
           timeframe: "Short-term",
-          goal: "Housing Choice",
+          goal: "Housing",
           indicators: ["Middle Housing Share", "Housing Cost Burden"],
           funding: "Funded"
         },
@@ -186,16 +186,16 @@
           status: "In Progress",
           department: "Mayor's Office",
           timeframe: "Medium-term",
-          goal: "Equity & Neighborhood Investment",
+          goal: "Economic Development",
           indicators: ["Public Investment in Historically Underserved Areas", "Infrastructure Projects in Priority Areas"],
           funding: "Partially Funded"
         },
         {
           title: "Develop a citywide small business and corridor reinvestment program.",
           status: "Not Started",
-          department: "Economic Development",
+          department: "Economic Development Task Force",
           timeframe: "Medium-term",
-          goal: "Economic Opportunity",
+          goal: "Economic Development",
           indicators: ["Jobs Near Transit", "Youth Job Pathway Opportunities"],
           funding: "Unfunded"
         },
@@ -204,7 +204,7 @@
           status: "Ongoing",
           department: "Parks, Recreation and Public Property",
           timeframe: "Long-term",
-          goal: "Green Space & Resilience",
+          goal: "Sustainability & Resiliency",
           indicators: ["Households within a 15-Minute Walk of Parks or Trails", "Tree Canopy Coverage"],
           funding: "Funded"
         },
@@ -220,35 +220,35 @@
       ];
 
       const indicators = [
-        ["Growth & Land Use", "Infill Development", "55.7%", "Increase", "Improving", "Shows whether growth is using existing infrastructure and strengthening established areas.", "2027", 56],
-        ["Growth & Land Use", "Greenfield Land Consumed", "1,240 acres", "Decrease", "Needs Attention", "Tracks pressure on undeveloped land and long-term infrastructure obligations.", "2027", 38],
-        ["Growth & Land Use", "Growth in Centers and Corridors", "48.2%", "Increase", "Improving", "Measures whether new activity is concentrating in planned mixed-use places.", "2027", 48],
-        ["Growth & Land Use", "Redevelopment of Vacant or Underutilized Land", "22.5%", "Increase", "Stable", "Indicates whether vacant and underused sites are becoming productive community assets.", "2027", 23],
+        ["Land Use & Built Form", "Infill Development", "55.7%", "Increase", "Improving", "Shows whether growth is using existing infrastructure and strengthening established areas.", "2027", 56],
+        ["Land Use & Built Form", "Greenfield Land Consumed", "1,240 acres", "Decrease", "Needs Attention", "Tracks pressure on undeveloped land and long-term infrastructure obligations.", "2027", 38],
+        ["Land Use & Built Form", "Growth in Centers and Corridors", "48.2%", "Increase", "Improving", "Measures whether new activity is concentrating in planned mixed-use places.", "2027", 48],
+        ["Land Use & Built Form", "Redevelopment of Vacant or Underutilized Land", "22.5%", "Increase", "Stable", "Indicates whether vacant and underused sites are becoming productive community assets.", "2027", 23],
+        ["Land Use & Built Form", "Infrastructure Projects in Priority Areas", "37", "Increase", "Improving", "Tracks delivery of capital projects in priority geographies.", "2027", 78],
         ["Fiscal Sustainability", "Infrastructure Cost per New Household or Job", "$18,400", "Decrease", "Stable", "Connects development patterns to public service and capital costs.", "2027", 62],
         ["Fiscal Sustainability", "Value per Acre", "$415,000", "Increase", "Improving", "Compares land productivity across development patterns and districts.", "2027", 72],
         ["Fiscal Sustainability", "Property Tax Revenue from New Development", "$38.2M", "Increase", "Improving", "Shows how new development supports local public services.", "2027", 68],
-        ["Housing Choice", "Average Housing Density", "7.8 units per acre", "Increase", "Stable", "Tracks whether neighborhoods can support more housing choice and local services.", "2027", 50],
-        ["Housing Choice", "Detached Housing Share", "61%", "Monitor", "Stable", "Shows the balance of detached homes compared with other housing options.", "2027", 61],
-        ["Housing Choice", "Middle Housing Share", "18%", "Increase", "Improving", "Tracks duplexes, townhomes, courtyard housing, and other moderate-scale options.", "2027", 42],
-        ["Housing Choice", "Multi-Unit Housing Share", "21%", "Increase", "Stable", "Measures apartments and other multi-unit homes near jobs, transit, and services.", "2027", 45],
-        ["Housing Choice", "Housing Cost Burden", "31%", "Decrease", "Needs Attention", "Shows the share of households spending more than they can comfortably afford on housing.", "2027", 31],
-        ["Mobility & Access", "Households within a 15-Minute Walk of Transit", "53.9%", "Increase", "Stable", "Shows whether residents can reach transit without needing a car.", "2027", 54],
-        ["Mobility & Access", "Households within a 15-Minute Walk of Parks or Trails", "68.4%", "Increase", "Improving", "Measures practical access to recreation, trails, and daily outdoor activity.", "2027", 68],
-        ["Mobility & Access", "Households within a 15-Minute Walk of Retail", "46.5%", "Increase", "Stable", "Tracks access to daily needs in complete neighborhoods.", "2027", 47],
-        ["Mobility & Access", "Non-Auto Trip Share", "12.7%", "Increase", "Needs Attention", "Shows whether walking, biking, transit, and other options are becoming more useful.", "2027", 29],
-        ["Mobility & Access", "Vehicle Miles Traveled per Service Population", "21.3 miles", "Decrease", "Needs Attention", "Measures travel demand and transportation efficiency across residents and jobs.", "2027", 34],
-        ["Economic Opportunity", "Jobs Accessible within 20 Minutes", "42.6%", "Increase", "Stable", "Shows how many jobs are reasonably reachable from where people live.", "2027", 43],
-        ["Economic Opportunity", "Average Wage", "$56,800", "Increase", "Improving", "Tracks whether economic growth is translating into stronger wages.", "2027", 64],
-        ["Economic Opportunity", "Jobs Near Transit", "37.4%", "Increase", "Stable", "Connects employment growth to transportation choice.", "2027", 37],
-        ["Economic Opportunity", "Youth Job Pathway Opportunities", "1,250 placements", "Increase", "Improving", "Counts internships, apprenticeships, and workforce programs connected to local youth.", "2027", 74],
+        ["Housing", "Average Housing Density", "7.8 units per acre", "Increase", "Stable", "Tracks whether neighborhoods can support more housing choice and local services.", "2027", 50],
+        ["Housing", "Detached Housing Share", "61%", "Monitor", "Stable", "Shows the balance of detached homes compared with other housing options.", "2027", 61],
+        ["Housing", "Middle Housing Share", "18%", "Increase", "Improving", "Tracks duplexes, townhomes, courtyard housing, and other moderate-scale options.", "2027", 42],
+        ["Housing", "Multi-Unit Housing Share", "21%", "Increase", "Stable", "Measures apartments and other multi-unit homes near jobs, transit, and services.", "2027", 45],
+        ["Housing", "Housing Cost Burden", "31%", "Decrease", "Needs Attention", "Shows the share of households spending more than they can comfortably afford on housing.", "2027", 31],
+        ["Mobility", "Households within a 15-Minute Walk of Transit", "53.9%", "Increase", "Stable", "Shows whether residents can reach transit without needing a car.", "2027", 54],
+        ["Mobility", "Households within a 15-Minute Walk of Parks or Trails", "68.4%", "Increase", "Improving", "Measures practical access to recreation, trails, and daily outdoor activity.", "2027", 68],
+        ["Mobility", "Households within a 15-Minute Walk of Retail", "46.5%", "Increase", "Stable", "Tracks access to daily needs in complete neighborhoods.", "2027", 47],
+        ["Mobility", "Non-Auto Trip Share", "12.7%", "Increase", "Needs Attention", "Shows whether walking, biking, transit, and other options are becoming more useful.", "2027", 29],
+        ["Mobility", "Vehicle Miles Traveled per Service Population", "21.3 miles", "Decrease", "Needs Attention", "Measures travel demand and transportation efficiency across residents and jobs.", "2027", 34],
+        ["Economic Development", "Jobs Accessible within 20 Minutes", "42.6%", "Increase", "Stable", "Shows how many jobs are reasonably reachable from where people live.", "2027", 43],
+        ["Economic Development", "Average Wage", "$56,800", "Increase", "Improving", "Tracks whether economic growth is translating into stronger wages.", "2027", 64],
+        ["Economic Development", "Jobs Near Transit", "37.4%", "Increase", "Stable", "Connects employment growth to transportation choice.", "2027", 37],
+        ["Economic Development", "Youth Job Pathway Opportunities", "1,250 placements", "Increase", "Improving", "Counts internships, apprenticeships, and workforce programs connected to local youth.", "2027", 74],
         ["Sustainability & Resiliency", "Tree Canopy Coverage", "28.5%", "Increase", "Stable", "Tracks shade, heat mitigation, air quality, and neighborhood comfort.", "2027", 57],
         ["Sustainability & Resiliency", "Impervious Surface Coverage", "34.2%", "Decrease", "Stable", "Shows how much land is covered by hard surfaces that increase runoff and heat.", "2027", 46],
         ["Sustainability & Resiliency", "Development in Flood-Prone Areas", "6.1%", "Decrease", "Needs Attention", "Monitors exposure to flooding and long-term climate risk.", "2027", 22],
         ["Sustainability & Resiliency", "Greenfield and Agricultural Land Consumed", "1,240 acres", "Decrease", "Needs Attention", "Tracks loss of open land and farmland at the edge of the city.", "2027", 35],
-        ["Equity & Neighborhood Investment", "Public Investment in Historically Underserved Areas", "$84.5M", "Increase", "Improving", "Shows where public dollars are being directed and who benefits.", "2027", 70],
-        ["Equity & Neighborhood Investment", "Neighborhoods with Improved Access to Transit", "14", "Increase", "Improving", "Counts places where transit access has measurably improved.", "2027", 66],
-        ["Equity & Neighborhood Investment", "Areas with High Displacement Risk", "9", "Decrease", "Needs Attention", "Identifies neighborhoods where rising costs could displace residents or businesses.", "2027", 27],
-        ["Equity & Neighborhood Investment", "Infrastructure Projects in Priority Areas", "37", "Increase", "Improving", "Tracks delivery of capital projects in priority geographies.", "2027", 78]
+        ["Economic Development", "Public Investment in Historically Underserved Areas", "$84.5M", "Increase", "Improving", "Shows where public dollars are being directed and who benefits.", "2027", 70],
+        ["Economic Development", "Neighborhoods with Improved Access to Transit", "14", "Increase", "Improving", "Counts places where transit access has measurably improved.", "2027", 66],
+        ["Economic Development", "Areas with High Displacement Risk", "9", "Decrease", "Needs Attention", "Identifies neighborhoods where rising costs could displace residents or businesses.", "2027", 27]
       ].map(([goal, name, value, direction, status, why, year, progress]) => ({
         goal, name, value, direction, status, why, year, progress
       }));
@@ -488,7 +488,7 @@
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                 </label>
                 <Select label="Goal Area" value={goal} setValue={setGoal} options={goals.map(g => g.name)} />
-                <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Planning District", "Neighborhood Area", "Priority Corridor"]} />
+                <Select label="Geography" value={geo} setValue={setGeo} options={["Citywide", "Council District", "Neighborhood Area", "Priority Corridor"]} />
                 <Select label="Year" value={year} setValue={setYear} options={["2027", "2026", "2025"]} />
                 <Select label="Indicator Status" value={status} setValue={setStatus} options={["Improving", "Stable", "Needs Attention"]} />
               </div>
@@ -531,7 +531,7 @@
                 Geography helps residents understand how plan actions and public investments are showing up in different parts of Omaha.
               </SectionHeading>
               <div className="mb-6 flex flex-wrap justify-center gap-2">
-                {["Citywide", "City Council District", "Planning District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
+                {["Citywide", "City Council District", "Neighborhood Area", "Priority Corridor", "Historically Underserved Area"].map(type => (
                   <button key={type} onClick={() => setGeoType(type)} className={`rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${geoType === type ? "bg-[#620603] text-white ring-[#620603]" : "bg-white/90 text-civic-muted ring-civic-line"}`}>{type}</button>
                 ))}
               </div>
@@ -557,13 +557,13 @@
       }
 
       function InvestmentMap() {
-        const layers = ["Capital Improvement Projects", "Housing Investments", "Transportation Projects", "Parks and Public Space Projects", "Economic Development Projects", "Planning Initiatives", "Priority Corridors", "Historically Underserved Areas"];
+        const layers = ["Capital Improvement Projects", "Housing Investments", "Transportation Projects", "Parks Projects", "Economic Development Projects", "Planning Initiatives", "Priority Corridors", "Historically Underserved Areas"];
         const [activeLayers, setActiveLayers] = useState(layers.slice(0, 4));
         const toggle = layer => setActiveLayers(prev => prev.includes(layer) ? prev.filter(item => item !== layer) : [...prev, layer]);
         return (
           <section id="investments" className="px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
-              <SectionHeading eyebrow="Investment Map" title="Where public resources are going">
+              <SectionHeading eyebrow="Implementation Map" title="Where public resources are going">
                 Public investments connect adopted plan priorities to capital projects, housing programs, corridor work, and neighborhood improvements.
               </SectionHeading>
               <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
@@ -634,7 +634,7 @@
         ["Indicator Definition", "Plain-language definition of what the measure captures and why it was selected."],
         ["Data Source", "Primary source, stewarding agency, and any transformations used in the dashboard."],
         ["Update Frequency", "How often the measure is refreshed, such as annually, quarterly, or when new data is released."],
-        ["Geography", "Whether the measure is available citywide, by council district, planning district, corridor, or neighborhood area."],
+        ["Geography", "Whether the measure is available citywide, by council district, corridor, or neighborhood area."],
         ["Baseline Year", "The first year used to compare future progress against plan adoption conditions."],
         ["Direction of Desired Change", "Whether the plan expects the value to increase, decrease, or be monitored."],
         ["Limitations", "Known caveats, missing data, confidence issues, or interpretation notes for public users."]
