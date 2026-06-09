@@ -95,6 +95,11 @@
         background-size: 44px 44px;
       }
       .focus-ring:focus { outline: 3px solid rgba(250, 79, 30, 0.35); outline-offset: 2px; }
+      .nowrap-pill {
+        align-items: center;
+        display: inline-flex;
+        white-space: nowrap;
+      }
       .brand-panel {
         position: relative;
         overflow: hidden;
@@ -124,7 +129,7 @@
         ["Home", "overview"],
         ["Implementation Tracker", "implementation"],
         ["Indicators Dashboard", "indicators"],
-        ["Investment Map", "investments"],
+        ["Implementation Map", "investments"],
         ["Annual Reports", "reports"],
         ["Data & Methods", "methods"]
       ];
@@ -345,7 +350,6 @@
           ["Why it matters", indicator.methodology.why],
           ["Data source", indicator.methodology.dataSource],
           ["Update frequency", indicator.methodology.updateFrequency],
-          ["Geography", indicator.methodology.geography],
           ["Baseline year", indicator.methodology.baselineYear],
           ["Direction of desired change", indicator.methodology.desiredChange],
           ["Limitations", indicator.methodology.limitations]
@@ -487,7 +491,7 @@
                     <div className="mb-4 h-1.5 w-16 rounded-full" style={{ backgroundColor: goalStyle(goal.name).color }}></div>
                     <h3 className="text-lg font-extrabold text-[#111111]">{goal.name}</h3>
                     <p className="mt-2 min-h-[72px] text-sm leading-6 text-civic-muted">{goal.desc}</p>
-                    <button type="button" onClick={() => navigate("indicators", { goal: goal.name })} className="mt-4 inline-flex rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</button>
+                    <button type="button" onClick={() => navigate("indicators", { goal: goal.name })} className="nowrap-pill mt-4 rounded-lg border border-civic-line bg-white/80 px-3 py-2 text-sm font-extrabold text-civic-ink hover:bg-[#efe9dc]">View indicators</button>
                   </article>
                 ))}
               </div>
@@ -561,7 +565,6 @@
         const [goal, setGoal] = useState(routeParams.goal || "All");
         const [status, setStatus] = useState(routeParams.status || "All");
         const [year, setYear] = useState(routeParams.year || "All");
-        const [geo, setGeo] = useState(routeParams.geo || "All");
         const [tab, setTab] = useState(routeParams.goal || "All");
         useEffect(() => setSearch(routeParams.q || ""), [routeParams.q]);
         useEffect(() => {
@@ -571,7 +574,6 @@
         }, [routeParams.goal]);
         useEffect(() => setStatus(routeParams.status || "All"), [routeParams.status]);
         useEffect(() => setYear(routeParams.year || "All"), [routeParams.year]);
-        useEffect(() => setGeo(routeParams.geo || "All"), [routeParams.geo]);
         const updateFilter = (key, value, setter) => {
           setter(value);
           onParamChange(key, value);
@@ -595,13 +597,12 @@
                   <button key={name} onClick={() => { setTab(name); setGoal(name); onParamChange("goal", name); }} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-extrabold ring-1 ${tab === name ? "bg-[#620603] text-white ring-[#620603]" : "bg-white/90 text-civic-muted ring-civic-line hover:text-[#111111]"}`} style={tab === name && name !== "All" ? { boxShadow: `inset 0 -4px 0 ${goalStyle(name).color}` } : {}}>{name}</button>
                 ))}
               </div>
-              <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-5">
+              <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-4">
                 <label>
                   <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search</span>
                   <input value={search} onChange={e => { setSearch(e.target.value); onParamChange("q", e.target.value); }} placeholder="Search indicators" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                 </label>
                 <Select label="Goal Area" value={goal} setValue={value => { setGoal(value); setTab(value); onParamChange("goal", value); }} options={goals.map(g => g.name)} />
-                <Select label="Geography" value={geo} setValue={value => updateFilter("geo", value, setGeo)} options={["Citywide", "Council District", "Neighborhood Area", "Priority Corridor"]} />
                 <Select label="Year" value={year} setValue={value => updateFilter("year", value, setYear)} options={["2027", "2026", "2025"]} />
                 <Select label="Indicator Status" value={status} setValue={value => updateFilter("status", value, setStatus)} options={["Improving", "Stable", "Needs Attention"]} />
               </div>
@@ -625,10 +626,10 @@
                     <p className="mt-4 text-sm leading-6 text-civic-muted">{indicator.why}</p>
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-civic-muted">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1">Updated {indicator.year}</span>
-                        <span className="rounded-full bg-[#f3f0e7] px-2.5 py-1">Related plan goal</span>
+                        <span className="nowrap-pill rounded-full bg-[#f3f0e7] px-2.5 py-1">Updated {indicator.year}</span>
+                        <span className="nowrap-pill rounded-full bg-[#f3f0e7] px-2.5 py-1">Related plan goal</span>
                       </div>
-                      <button type="button" onClick={() => onOpenIndicator(indicator)} className="focus-ring rounded-full border border-[#620603]/25 bg-white px-3 py-1.5 text-xs font-extrabold text-[#620603] hover:bg-[#f6e8e7]">
+                      <button type="button" onClick={() => onOpenIndicator(indicator)} className="focus-ring nowrap-pill rounded-full border border-[#620603]/25 bg-white px-3 py-1.5 text-xs font-extrabold text-[#620603] hover:bg-[#f6e8e7]">
                         About this measure
                       </button>
                     </div>
@@ -715,11 +716,6 @@
                 <p className="max-w-5xl text-lg leading-8">
                   In 2027, Omaha completed 18 plan actions, advanced 11 additional actions, and began tracking 42 plan indicators. Progress was strongest in corridor planning, park access, and housing production. Areas requiring continued attention include transit access, housing affordability, infrastructure gaps, and investment in historically underserved neighborhoods.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {["Download Annual Report", "View Completed Actions", "View Indicators Needing Attention", "View Public Investment Summary"].map(button => (
-                    <button key={button} className="rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-civic-ink hover:bg-[#f3f0e7]">{button}</button>
-                  ))}
-                </div>
               </div>
               <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 {reportDocuments.map(([title, description, action]) => (
@@ -727,8 +723,8 @@
                     <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#620603]">Sample document</p>
                     <h3 className="mt-2 text-lg font-black text-[#111111]">{title}</h3>
                     <p className="mt-2 text-sm leading-6 text-civic-muted">{description}</p>
-                    <button type="button" className="focus-ring mt-4 rounded-full border border-[#620603]/25 bg-white px-4 py-2 text-sm font-extrabold text-[#620603] hover:bg-[#f6e8e7]">
-                      {action} · Coming soon
+                    <button type="button" className="focus-ring nowrap-pill mt-4 w-full justify-center rounded-full border border-[#620603]/25 bg-white px-3 py-2 text-xs font-extrabold text-[#620603] hover:bg-[#f6e8e7] sm:text-sm">
+                      {action} &middot; Coming soon
                     </button>
                   </article>
                 ))}
@@ -740,14 +736,11 @@
 
       function DataMethods({ search, setSearch, routeParams, onParamChange, onOpenIndicator }) {
         const [goal, setGoal] = useState(routeParams.goal || "All");
-        const [geo, setGeo] = useState(routeParams.geo || "All");
         const [source, setSource] = useState(routeParams.source || "All");
         useEffect(() => setSearch(routeParams.q || ""), [routeParams.q]);
         useEffect(() => setGoal(routeParams.goal || "All"), [routeParams.goal]);
-        useEffect(() => setGeo(routeParams.geo || "All"), [routeParams.geo]);
         useEffect(() => setSource(routeParams.source || "All"), [routeParams.source]);
         const dataSources = [...new Set(indicators.map(indicator => indicator.methodology.dataSource))].sort();
-        const geographies = [...new Set(indicators.map(indicator => indicator.methodology.geography))].sort();
         const updateFilter = (key, value, setter) => {
           setter(value);
           onParamChange(key, value);
@@ -756,22 +749,20 @@
           const text = `${indicator.name} ${indicator.goal} ${indicator.why} ${indicator.methodology.dataSource}`.toLowerCase();
           return (!search || text.includes(search.toLowerCase())) &&
             (goal === "All" || indicator.goal === goal) &&
-            (geo === "All" || indicator.methodology.geography === geo) &&
             (source === "All" || indicator.methodology.dataSource === source);
-        }), [search, goal, geo, source]);
+        }), [search, goal, source]);
         return (
           <section id="methods" className="px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
               <SectionHeading eyebrow="Data & Methods" title="Indicator library">
                 Search every measure, review source information, and open the detailed methodology for any indicator.
               </SectionHeading>
-              <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-4">
+              <div className="mb-6 grid gap-3 rounded-3xl border border-civic-line bg-white p-4 shadow-sm md:grid-cols-3">
                 <label>
                   <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-civic-muted">Search indicators</span>
                   <input value={search} onChange={e => { setSearch(e.target.value); onParamChange("q", e.target.value); }} placeholder="Name, goal, source" className="focus-ring w-full rounded-xl border border-civic-line bg-white/95 px-3 py-2.5 text-sm shadow-sm" />
                 </label>
                 <Select label="Goal Area" value={goal} setValue={value => updateFilter("goal", value, setGoal)} options={goals.map(g => g.name)} />
-                <Select label="Geography" value={geo} setValue={value => updateFilter("geo", value, setGeo)} options={geographies} />
                 <Select label="Data Source" value={source} setValue={value => updateFilter("source", value, setSource)} options={dataSources} />
               </div>
               <div className="mb-4 flex items-center justify-between gap-4">
